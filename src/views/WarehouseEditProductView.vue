@@ -1,17 +1,25 @@
 <template>
 <Header :title="'Référence'"/>
-  <div class="about">
+  <div class="back-head">
+    <router-link v-if="getProduct && getProduct.id" :to="{name: 'warehouse_product', params: {id: getProduct.id}}" class="back-button">
+        retour
+    </router-link>
+  </div>
+  <div class="page-form">
 
     <img crossorigin="anonymous" v-if="this.url" :src="this.url" alt="" class="product-img">
     <img crossorigin="anonymous" v-if="getProduct.image && this.url === ''" :src="getProduct.image" alt="" class="product-img">
 
-    <div class="form-product">
+    <div class="form">
+      <label class="label">Image</label>
+      <input class="file-input" id="file" @change="onFileSelected" type="file" ref="imageUrl" name="file">
       <label class="label">Référence</label>
       <input class="input" @input="cancelError()" v-model="reference" type="text" placeholder="Référence Produit" />
       <label class="label">Nom</label>
       <input class="input" @input="cancelError()" v-model="name" type="text" placeholder="Nom du produit" />
       <label class="label">Déscription</label>
       <input class="input" @input="cancelError()" v-model="description" type="text" placeholder="Déscription" />
+      <label class="label">Catégorie</label>
       <select @input="cancelError()" v-model="category" name="category" id="" class="input">
         <option value="epicerie">Epicerie</option>
         <option value="frais">Frais</option>
@@ -23,31 +31,25 @@
         <option value="materiel">Petits Matériels</option>
         <option value="autre">Autre</option>
       </select>
-      <input id="file" @change="onFileSelected" type="file" ref="imageUrl" name="file">
       <label class="label">Colisage</label>
-      <input class="" v-model="colisage" type="number" placeholder="Colisage" />
+      <input class="input" v-model="colisage" type="number" placeholder="Colisage" />
       <label class="label">Délai d'appro</label>
-      <input class="" v-model="leadTime" type="number" placeholder="Délai d'appro (en J)" />
+      <input class="input" v-model="leadTime" type="number" placeholder="Délai d'appro (en J)" />
+      <label class="label">TVA</label>
       <select @input="cancelError()" class="input" v-model="tva" name="tva" id="">
         <option value="5,5">5,5 %</option>
         <option value="10">10 %</option>
         <option value="20">20 %</option>
       </select>
       <label class="label">Format</label>
-      <input v-model="format" type="text" placeholder="Format" />
+      <input class="input" v-model="format" type="text" placeholder="Format" />
+      <label class="label">Fournisseur</label>
       <select @input="cancelError()" class="input" v-model="supplier" name="supplier" id="">
         <option v-for="supplier in getSuppliers" :key="supplier.id" :value="supplier.id">{{ supplier.name }}</option>
       </select>
-      <div id="error" v-if="error">{{ error.message }}</div>
-      <button @click="editProduct()" id="add-button" type="button">Modifier le produit</button>
+      <div class="error" v-if="error">{{ error.message }}</div>
+      <button @click="editProduct()" class="valid-add-button">Modifier le produit</button>
     </div>
-
-    <router-link v-if="getProduct && getProduct.id" :to="{name: 'warehouse_product', params: {id: getProduct.id}}">
-        retour
-    </router-link>
-
-    
-
   </div>
 <Footer/>
 </template>

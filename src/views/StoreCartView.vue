@@ -2,39 +2,38 @@
 <StoreEditQuantity v-if="this.$store.state.modeEditQuantity === 'editQuantity'" :product="product" />
 <StoreConfirmCart v-if="this.$store.state.modeConfirmCart === 'confirmCart'" />
 <Header :title="'Welcome'"/>
-  <div class="page">
-    <div class="page-head">
-      <router-link to="/store_products">retour</router-link>
-      <button @click="confirmCart()">Valider mon panier</button>
+  <div class="back-head">
+      <router-link to="/store_products" class="back-button">Retour</router-link>
+      <div v-if="getCart.length > 0" @click="confirmCart()" class="cart-button">Valider mon panier</div>
     </div>
-
+  <div class="page">
+    <div v-if="getCart.length <= 0" class="no-result">Votre Panier est vide</div>
+    <router-link v-if="getCart.length <= 0" to="/store_products" class="add-product-button">Ajouter des Produits</router-link>
     <div class="page-products">
-      <div v-for="product in getCart" :key="product.id" class="product">
-          <div class="head-product">
-            <div class="photo-box-product">
-              <img :src="product.image" alt="" class="photo-product">
+      <div v-for="product in getCart" :key="product.id" class="bloc-card">
+          <div class="bloc-card-top">
+            <div class="bloc-card-image-box">
+              <img :src="product.image" alt="" class="bloc-card-image">
+            </div>
+            <div class="quantity-in-cart">
+              <div class="quantity-box">
+                <div class="quantity-infos">Qté. </div>
+                <div class="quantity"> {{getQuantity(product.id)}}</div>
+              </div>
+              <div class="edit-buttons">
+                <div class="edit-button-cart" @click="editQuantity(product.id)">Modifier</div>
+                <img class="delete-button-cart" @click="removeProduct(product.id)" src="../assets/trash.svg" alt="">
+              </div> 
             </div>
           </div>
-          <div class="body-product">
-            <div>{{ product.reference }}</div>
-            <div>{{ product.name }}</div>
-            <div>{{ product.description }}</div>
-            <div>{{ product.category }}</div>
-            <div>{{ product.packaging }}</div>
-            <div>{{ product.size }}</div>
-          </div>
-          <div>
-            {{ getQuantity(product.id) }} dans le panier
-          </div>
-          <div class="edit-quantity">
-            <button @click="editQuantity(product.id)">Modifier</button>
-          </div>
-          <div>
-            <button @click="removeProduct(product.id)">Retirer</button>
+          <div class="bloc-card-infos-box">
+            <p class="name">{{ product.name }}</p>
+            <p>Réf. : {{ product.reference }}</p>
+            <p>Colisage : {{ product.packaging }} / Colis</p>
+            <p>Format : {{ product.size }}</p>
           </div>
       </div>
     </div>
-    
   </div>
 <Footer/>
 </template>
@@ -104,51 +103,59 @@ export default {
 </script>
 
 <style scoped>
-/* Page */
-.page{
-  width: 100%;
-}
-/* Head Page */
-.page-head{
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-}
-/* Search */
-
-/* Products */
 .page-products{
-  width: 90%;
-  margin: auto;
-  display: flex;
-  justify-content: space-evenly;
-  flex-wrap: wrap;
+  padding-top: 30px;
 }
-
-/* Product */
-.product{
-  width: 200px;
-  
-  background-color: rgb(204, 204, 204);
+.add-product-button{
+  text-decoration: none;
+  padding: 5px 20px;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  background-image: linear-gradient(52deg, rgb(174,174,174),rgb(14,0,0));
+}
+.quantity-in-cart{
+  margin-right: 15px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-}
-.head-product{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.photo-box-product{
+  align-items: flex-end;
+  justify-content: space-between;
   height: 100px;
-  width: 100px;
-  overflow: hidden;
-  border-radius: 50px;
-
 }
-.photo-product{
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.quantity-box{
+  display: flex;
+  align-items: center;
+  color: green;
+}
+.quantity-infos{
+  font-size: 0.8em;
+}
+.quantity{
+  font-size: 2.2em;
+  font-weight: 600;
+  margin-left: 5px;
+}
+.edit-buttons{
+  display: flex;
+  margin-bottom: 20px;
+}
+.edit-button-cart{
+  cursor: pointer;
+  color: white;
+  background-image: linear-gradient(52deg, rgb(174,174,174),rgb(14,0,0));
+  border-radius: 10px;
+  border: none;
+  font-size: 0.8em;
+  padding: 3px 8px;
+}
+.delete-button-cart{
+  cursor: pointer;
+  height: 20px;
+  margin-left: 10px;
+}
+.name{
+  text-align: center;
+  font-size: 1.4em;
+  margin-bottom: 10px;
 }
 </style>

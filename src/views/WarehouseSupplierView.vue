@@ -1,22 +1,31 @@
 <template>
 <Header :title="'Fournisseur'"/>
-  <div class="about">
-    <h1>warehouse supplier {{ getSupplier.name }}</h1>
-
-    <router-link to="/warehouse_suppliers">
-        retour
-    </router-link>
-
-    <router-link v-if="getSupplier && getSupplier.id" :to="{name: 'warehouse_edit_supplier', params: {id: getSupplier.id}}" class="">
-      modifier
-    </router-link>
-
-    <div id="delete-button" @click="switchToConfirm()">Supprimer</div>
-    <div id="show-confirm" v-if="mode === 'confirm'">
-        <p id="confirm-text">Supprimer le fournisseur?</p>
-        <div id="choice-box">
-            <button id="confirm-button" @click="deleteSupplier()">Supprimer</button>
-            <div id="cancel-button" @click="cancelConfirm()">Annuler</div>
+  <div class="back-head">
+    <router-link to="/warehouse_suppliers" class="back-button">retour</router-link>
+  </div>
+  <div class="page-mono">
+    <div class="page-mono-bloc">
+      <h1 class="page-mono-title">{{getSupplier.name}}</h1>
+      <div class="page-mono-infos">
+        <p>{{getSupplier.adress}}</p>
+        <p>{{getSupplier.adress2}}</p>
+        <p>{{getSupplier.postalCode}}</p>
+        <p>{{getSupplier.city}}</p>
+        <p>{{getSupplier.tel}}</p>
+        <p>{{getSupplier.mail}}</p>
+      </div>
+    </div>
+    <div v-if="getSupplier.name !== 'Autre'" class="page-mono-buttons">
+      <router-link v-if="getSupplier && getSupplier.id" :to="{name: 'warehouse_edit_supplier', params: {id: getSupplier.id}}" class="edit-button">
+        modifier
+      </router-link>
+      <div class="delete-button" @click="switchToConfirm()">Supprimer</div>
+    </div>
+    <div class="show-confirm" v-if="mode === 'confirm'">
+        <p class="confirm-text">Supprimer le fournisseur?</p>
+        <div class="choice-box">
+            <button class="confirm-button" @click="deleteSupplier()">Supprimer</button>
+            <div class="cancel-button" @click="cancelConfirm()">Annuler</div>
         </div>
     </div>
     
@@ -65,3 +74,89 @@ export default {
   },
 }
 </script>
+
+<style>
+.page-mono{
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  padding-top: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.page-mono-bloc{
+  width: 95%;
+  max-width: 700px;
+  padding: 20px 0;
+}
+.page-mono-title{
+  width: 100%;
+  text-align: center;
+}
+.page-mono-infos{
+  width: 90%;
+  margin: auto;
+  margin-top: 10px;
+  padding: 10px 0;
+}
+.page-mono-infos p{
+  margin-left: 10px;
+}
+.page-mono-buttons{
+  width: 95%;
+  max-width: 700px;
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+.edit-button{
+  background-image: linear-gradient(52deg, rgb(174,174,174),rgb(14,0,0));
+  text-decoration: none;
+  padding: 5px 20px;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+.delete-button{
+  background-color: #ea510b;
+  padding: 5px 20px;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+.show-confirm{
+  margin-top: 15px;
+}
+
+.choice-box{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+.confirm-button{
+  background-color: #ea510b;
+  padding: 5px 10px;
+  margin-right: 5px;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+}
+.cancel-button{
+  cursor: pointer;
+  margin-left: 5px;
+  font-weight: 600;
+}
+</style>
+
+<style scoped>
+.edit-button{
+  margin-right: 10px;
+}
+</style>

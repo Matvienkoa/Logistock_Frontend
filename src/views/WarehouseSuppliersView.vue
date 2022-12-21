@@ -1,21 +1,16 @@
 <template>
 <Header :title="'Fournisseurs'"/>
-  <div class="about">
-
-    <router-link to="/warehouse_add_supplier" class="menu-links">
-      <div class="menu-bloc">
-        Ajouter un fournisseur
+  <div class="back-head">
+    <router-link to="/warehouse_stock" class="back-button">retour</router-link>
+    <router-link to="/warehouse_add_supplier" class="cart-button">Ajouter un fournisseur</router-link>
+  </div>
+  <div class="page">
+    <div class="no-result" v-if="getSuppliers.length === 0">Vous n'avez pas enregistré de Fournisseur</div>
+    <router-link v-for="supplier in getSuppliers" :key="supplier.id" :to="{name: 'warehouse_supplier', params: {id: supplier.id}}" class="menu-links-list">
+      <div class="menu-bloc-list">
+        <div class="title-list">{{ supplier.name }}</div> 
       </div>
     </router-link>
-
-    <div v-for="supplier in getSuppliers" :key="supplier.id">
-      <router-link v-if="supplier && supplier.id" :to="{name: 'warehouse_supplier', params: {id: supplier.id}}" class="">{{ supplier.name }}</router-link>
-    </div>
-    
-    <router-link to="/warehouse_stock">
-        retour
-    </router-link>
-
   </div>
 <Footer/>
 </template>
@@ -39,3 +34,13 @@ export default {
     },
 }
 </script>
+
+<style scoped>
+@media (min-width: 700px) {
+  .page{
+    flex-direction: row;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+  }
+}
+</style>

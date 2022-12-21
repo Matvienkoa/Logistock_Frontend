@@ -1,15 +1,14 @@
 <template>
 <ConfirmOrder v-if="this.$store.state.modeConfirmOrder === 'confirmOrder'" :order="this.getOrder" />
 <Header :title="getOrder.id"/>
-    <router-link to="/warehouse_preparation_new_orders">
-        retour
-    </router-link>
-    <div class="page">
-        <Product v-for="detail in getOrder.orderDetails" :key="detail.id" :detail="detail.id" :id="detail.productId" :quantity="detail.quantity" />
-        <div v-if="error">{{ error }}</div>
-        <button @click="confirmOrder()">Valider la commande</button>
+    <div class="back-head">
+        <router-link to="/warehouse_preparation_new_orders" class="back-button">retour</router-link>
+        <div class="cart-button" @click="confirmOrder()">Valider la commande</div>
     </div>
-    
+    <div class="page">
+        <div class="error" v-if="error">{{ error }}</div>
+        <Product v-for="detail in getOrder.orderDetails" :key="detail.id" :detail="detail.id" :id="detail.productId" :quantity="detail.quantity" />
+    </div>
 <Footer/>
 </template>
 
@@ -54,3 +53,7 @@ export default {
     },
 }
 </script>
+
+<style scoped>
+
+</style>

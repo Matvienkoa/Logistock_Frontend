@@ -1,8 +1,10 @@
 <template>
 <Header :title="'Fournisseur'"/>
-  <div class="about">
-
-    <div class="form-product">
+  <div class="back-head">
+    <router-link to="/warehouse_suppliers" class="back-button">retour</router-link>
+  </div>
+  <div class="page-form">
+    <div class="form">
       <label class="label">Nom</label>
       <input class="input" id="input-name" @input="cancelError()" v-model="name" type="text" placeholder="nom" />
       <label class="label">Adresse</label>
@@ -17,16 +19,9 @@
       <input class="input" v-model="tel" type="text" placeholder="Téléphone" />
       <label class="label">mail</label>
       <input class="input" v-model="mail" type="text" placeholder="Mail" />
-      <div id="error" v-if="error">{{ error.message }}</div>
-      <button @click="addSupplier()" id="add-button" type="button">Ajouter le fournisseur</button>
+      <div class="error" v-if="error">{{ error.message }}</div>
+      <button @click="addSupplier()" class="valid-add-button">Ajouter le fournisseur</button>
     </div>
-
-    <router-link to="/warehouse_suppliers">
-        retour
-    </router-link>
-
-    
-
   </div>
 <Footer/>
 </template>
@@ -85,12 +80,13 @@ export default {
 }
 </script>
 
-<style scoped>
-/* Errors input */
-  .empty{
-    border: solid 2px #fa4c67;
-  }
-  #error{
-    color: #fa4c67;
-  }
+<style>
+.valid-add-button{
+  background-color: #38c550;
+  padding: 5px 20px;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+}
 </style>

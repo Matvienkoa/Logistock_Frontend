@@ -1,15 +1,16 @@
 <template>
-<Header :title="'Welcome'"/>
+<Header :title="'Accueil'"/>
   <div class="page">
     <router-link to="/store_products" class="menu-links">
       <div class="menu-bloc">
-        Catalogue
+        <img src="../assets/bag.jpg" alt="" class="img-back">
+        <div class="title-card">Commander</div>
       </div>
     </router-link>
-
     <router-link to="/store_orders" class="menu-links">
       <div class="menu-bloc">
-        Commandes
+        <img src="../assets/order-1.jpg" alt="" class="img-back">
+        <div class="title-card">Mes Commandes</div>
       </div>
     </router-link>
   </div>
@@ -33,20 +34,5 @@ export default {
 </script>
 
 <style scoped>
-/* Page */
-.page{
-  width: 100%;
-  padding-top: 80px;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  flex-wrap: wrap;
-}
-/* Links */
-.menu-bloc{
-  width: 200px;
-  height: 100px;
-  background-color: rgb(221, 221, 221);
-  
-}
+
 </style>

@@ -1,8 +1,11 @@
 <template>
 <Header :title="'Fournisseur'"/>
-  <div class="about">
+  <div class="back-head">
+    <router-link v-if="getSupplier && getSupplier.id" :to="{name: 'warehouse_supplier', params: {id: getSupplier.id}}" class="back-button">retour</router-link>
+  </div>
+  <div class="page-form">
 
-    <div class="form-product">
+    <div class="form">
       <label class="label">Nom</label>
       <input class="input" id="input-name" @input="cancelError()" v-model="name" type="text" placeholder="nom" />
       <label class="label">Adresse</label>
@@ -13,17 +16,13 @@
       <input class="input" v-model="postalCode" type="text" placeholder="Code Postal" />
       <label class="label">Ville</label>
       <input class="input" v-model="city" type="text" placeholder="Ville" />
-      <label class="label">Tél.</label>
+      <label class="label">Tél</label>
       <input class="input" v-model="tel" type="text" placeholder="Téléphone" />
-      <label class="label">mail</label>
+      <label class="label">Mail</label>
       <input class="input" v-model="mail" type="text" placeholder="Mail" />
-      <div id="error" v-if="error">{{ error.message }}</div>
-      <button @click="editSupplier()" id="add-button" type="button">Modifier le fournisseur</button>
+      <div class="error" v-if="error">{{ error.message }}</div>
+      <button @click="editSupplier()" class="valid-edit-button">Modifier le fournisseur</button>
     </div>
-
-    <router-link v-if="getSupplier && getSupplier.id" :to="{name: 'warehouse_supplier', params: {id: getSupplier.id}}">
-        retour
-    </router-link>
   </div>
 <Footer/>
 </template>
@@ -106,12 +105,47 @@ export default {
 }
 </script>
 
-<style scoped>
-/* Errors input */
-  .empty{
-    border: solid 2px #fa4c67;
-  }
-  #error{
-    color: #fa4c67;
-  }
+<style>
+.page-form{
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  padding-top: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.form{
+  width: 85%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 60px;
+}
+.label{
+  margin-bottom: 5px;
+  margin-left: 5px;
+  font-weight: 600;
+  align-self: flex-start;
+}
+.input{
+  width: 96%;
+  height: 30px;
+  margin-bottom: 20px;
+  border-radius: 3px;
+  border: none;
+  padding-left: 10px;
+  background-color: rgb(226, 226, 226);
+}
+.valid-edit-button{
+  background-color: #38c550;
+  padding: 5px 20px;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+}
 </style>

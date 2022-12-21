@@ -23,9 +23,14 @@ export default createStore({
     modeEditProductQuantity: "",
     detailId: "",
     modeConfirmOrder: "",
-    productsInOrder: []
+    productsInOrder: [],
+    sales: [],
+    cartForIcon: []
   },
   getters: {
+    getCartForIcon: (state) => {
+      return state.cartForIcon
+    },
     getUser: (state) => {
       return state.user
     },
@@ -70,9 +75,20 @@ export default createStore({
     },
     getProductsInOrder: (state) => {
       return state.productsInOrder
+    },
+    getSales: (state) => {
+      return state.sales
     }
   },
   mutations: {
+    SET_CART_FOR_ICON: function (state, cartForIcon) {
+      if(cartForIcon !== null) {
+        state.cartForIcon = cartForIcon
+      } else {
+        state.cartForIcon = []
+      }
+      
+    },
     LOG_OUT: function (state) {
         state.user = "",
         state.profile = "",
@@ -131,6 +147,9 @@ export default createStore({
     },
     RESET_PRODUCTS_IN_ORDER: function (state) {
       state.productsInOrder = []
+    },
+    SET_SALES: function (state, sales) {
+      state.sales = sales
     }
   },
   actions: {
@@ -197,13 +216,16 @@ export default createStore({
       })
     },
     getSuppliers: ({ commit }) => {
-      instance.get(`/supplier/`)
-        .then(function (response) {
-          commit('SET_SUPPLIERS', response.data)
-        })
-        .catch(function (error) {
-          console.log(error)
-        });
+      return new Promise((resolve, reject) => {
+        instance.get(`/supplier/`)
+          .then(function (response) {
+            commit('SET_SUPPLIERS', response.data)
+            resolve(response)
+          })
+          .catch(function (error) {
+            reject(error);
+          });
+      })
     },
     getSupplier: ({ commit }, supplierId) => {
       return new Promise((resolve, reject) => {
@@ -230,13 +252,16 @@ export default createStore({
       })
     },
     getProducts: ({ commit }) => {
-      instance.get(`/product/`)
-        .then(function (response) {
-          commit('SET_PRODUCTS', response.data)
-        })
-        .catch(function (error) {
-          console.log(error)
-        });
+      return new Promise((resolve, reject) => {
+        instance.get(`/product/`)
+          .then(function (response) {
+            commit('SET_PRODUCTS', response.data)
+            resolve(response)
+          })
+          .catch(function (error) {
+            reject(error);
+          });
+      })
     },
     getProduct: ({ commit }, productId) => {
       return new Promise((resolve, reject) => {
@@ -345,13 +370,16 @@ export default createStore({
         })
     },
     getStores: ({ commit }) => {
-      instance.get(`/store/`)
-        .then(function (response) {
-          commit('SET_STORES', response.data)
-        })
-        .catch(function (error) {
-          console.log(error)
-        });
+      return new Promise((resolve, reject) => {
+        instance.get(`/store/`)
+          .then(function (response) {
+            commit('SET_STORES', response.data)
+            resolve(response)
+          })
+          .catch(function (error) {
+            reject(error);
+          });
+      })
     },
     getStore: ({ commit }, storeId) => {
       instance.get(`/store/${storeId}`)
@@ -362,5 +390,21 @@ export default createStore({
           console.log(error)
         });
     },
+    getSales: ({ commit }) => {
+      return new Promise((resolve, reject) => {
+        instance.get(`/sale/`)
+          .then(function (response) {
+            commit('SET_SALES', response.data)
+            resolve(response)
+          })
+          .catch(function (error) {
+            reject(error);
+          });
+      })
+    },
+    getCartForIcon: ({ commit }) => {
+      let cart = JSON.parse(localStorage.getItem('cart'))
+      commit('SET_CART_FOR_ICON', cart)
+    }
   }
 })

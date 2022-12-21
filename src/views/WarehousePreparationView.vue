@@ -1,21 +1,21 @@
 <template>
 <Header :title="'Préparation'"/>
+  <div class="back-head">
+    <router-link to="/warehouse_home" class="back-button">retour</router-link>
+  </div>
   <div class="page">
     
     <router-link to="/warehouse_preparation_new_orders" class="menu-links">
       <div class="menu-bloc">
-        Commandes reçues
+        <img src="../assets/order-pending.jpg" alt="" class="img-back">
+        <div class="title-card">Commandes reçues</div>
       </div>
     </router-link>
-
     <router-link to="/warehouse_preparation_validated_orders" class="menu-links">
       <div class="menu-bloc">
-        Commandes validées
+        <img src="../assets/supplier.jpg" alt="" class="img-back">
+        <div class="title-card">Commandes validées</div>
       </div>
-    </router-link>
-
-    <router-link to="/warehouse_home">
-        retour
     </router-link>
   </div>
 <Footer/>
@@ -35,20 +35,5 @@ export default {
 </script>
 
 <style scoped>
-/* Page */
-.page{
-  width: 100%;
-  padding-top: 80px;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  flex-wrap: wrap;
-}
-/* Links */
-.menu-bloc{
-  width: 200px;
-  height: 100px;
-  background-color: rgb(221, 221, 221);
-  
-}
+
 </style>

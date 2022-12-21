@@ -1,16 +1,17 @@
 <template>
 <Header :title="'Références'"/>
-  <div class="about">
-
-    <img crossorigin="anonymous" v-if="this.url" :src="this.url" alt="">
-
-    <div class="form-product">
+  <div class="back-head">
+    <router-link to="/warehouse_products" class="back-button">retour</router-link>
+  </div>
+  <div class="page-form">
+    <div class="form">
       <label class="label">Référence</label>
       <input class="input" @input="cancelError()" v-model="reference" type="text" placeholder="Référence Produit" />
       <label class="label">Nom</label>
       <input class="input" @input="cancelError()" v-model="name" type="text" placeholder="Nom du produit" />
       <label class="label">Déscription</label>
       <input class="input" @input="cancelError()" v-model="description" type="text" placeholder="Déscription" />
+      <label class="label">Catégorie</label>
       <select @input="cancelError()" v-model="category" name="category" id="" class="input">
         <option value="epicerie">Epicerie</option>
         <option value="frais">Frais</option>
@@ -22,29 +23,33 @@
         <option value="materiel">Petits Matériels</option>
         <option value="autre">Autre</option>
       </select>
-      <input id="file" @change="onFileSelected" type="file" ref="imageUrl" name="file">
+      <label class="label">Image</label>
+      <img crossorigin="anonymous" v-if="this.url" :src="this.url" alt="" class="image-selected">
+      <input class="file-input" id="file" @change="onFileSelected" type="file" ref="imageUrl" name="file">
       <label class="label">Colisage</label>
-      <input class="" v-model="colisage" type="number" placeholder="Colisage" />
+      <input class="input" v-model="colisage" type="number" placeholder="Colisage" />
       <label class="label">Délai d'appro</label>
-      <input class="" v-model="leadTime" type="number" placeholder="Délai d'appro (en J)" />
+      <input class="input" v-model="leadTime" type="number" placeholder="Délai d'appro (en J)" />
+      <label class="label">TVA</label>
       <select @input="cancelError()" class="input" v-model="tva" name="tva" id="">
         <option value="5,5">5,5 %</option>
         <option value="10">10 %</option>
         <option value="20">20 %</option>
       </select>
       <label class="label">Format</label>
-      <input v-model="format" type="text" placeholder="Format" />
+      <input class="input" v-model="format" type="text" placeholder="Format" />
+      <label class="label">Fournisseur</label>
       <select @input="cancelError()" class="input" v-model="supplier" name="supplier" id="">
         <option v-for="supplier in getSuppliers" :key="supplier.id" :value="supplier.id">{{ supplier.name }}</option>
       </select>
-      <div id="error" v-if="error">{{ error.message }}</div>
-      <button @click="addProduct()" id="add-button" type="button">Ajouter le produit</button>
+      <label class="label">Disponible à la vente</label>
+      <select @input="cancelError()" class="input" v-model="onSale" name="onSale">
+        <option value="yes">Oui</option>
+        <option value="no">Non</option>
+      </select>
+      <div class="error" v-if="error">{{ error.message }}</div>
+      <button @click="addProduct()" class="valid-add-button">Ajouter le produit</button>
     </div>
-
-    <router-link to="/warehouse_products">
-        retour
-    </router-link>
-
   </div>
 <Footer/>
 </template>
@@ -74,6 +79,7 @@ export default {
           error: "",
           imageUrl: "",
           url: "",
+          onSale: ""
       }
   },
   computed: {
@@ -105,7 +111,7 @@ export default {
         formData.append('size', this.format)
         formData.append('supplierId', this.supplier)
         formData.append('image', this.imageUrl)
-
+        formData.append('onSale', this.onSale)
         this.$store.dispatch("addProduct", formData)
         .then((res) => {
             if(res.status === 201) {
@@ -129,12 +135,14 @@ export default {
 }
 </script>
 
-<style scoped>
-/* Errors input */
-  .empty{
-    border: solid 2px #fa4c67;
-  }
-  #error{
-    color: #fa4c67;
-  }
+<style>
+.image-selected{
+  width: 150px;
+  margin-bottom: 10px;
+}
+.file-input{
+  width: 100%;
+  margin: auto;
+  margin-bottom: 20px;
+}
 </style>

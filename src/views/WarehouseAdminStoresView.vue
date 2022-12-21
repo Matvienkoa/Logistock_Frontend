@@ -1,12 +1,14 @@
 <template>
 <Header :title="'Points de ventes'"/>
-    <router-link to="/warehouse_admin">
-        retour
-    </router-link>
+    <div class="back-head">
+        <router-link to="/warehouse_admin" class="back-button">retour</router-link>
+    </div>
     <div class="page">
-        <div v-for="store in getStores" :key="store.id">
-        <router-link v-if="store && store.id" :to="{name: 'warehouse_admin_store', params: {id: store.id}}" class="">{{ store.name }}</router-link>
-        </div>
+        <router-link v-for="store in getStores" :key="store.id" :to="{name: 'warehouse_admin_store', params: {id: store.id}}" class="menu-links-list">
+            <div class="menu-bloc-list">
+                <div class="title-list">{{ store.name }}</div> 
+            </div>
+        </router-link>
     </div>
     
 <Footer/>

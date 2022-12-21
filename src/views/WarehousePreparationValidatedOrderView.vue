@@ -1,12 +1,11 @@
 <template>
 <Header :title="getOrder.id"/>
-    <router-link to="/warehouse_preparation_validated_orders">
-        retour
-    </router-link>
+    <div class="back-head">
+        <router-link to="/warehouse_preparation_validated_orders" class="back-button">Retour</router-link>
+    </div>
     <div class="page">
         <Product v-for="detail in getOrder.orderDetails" :key="detail.id" :detail="detail.id" :id="detail.productId" :quantity="detail.quantity" />
     </div>
-    
 <Footer/>
 </template>
 

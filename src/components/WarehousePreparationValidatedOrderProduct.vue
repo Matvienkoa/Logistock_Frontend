@@ -1,5 +1,16 @@
 <template>
-    <div>{{this.id}} {{this.product.name}} {{this.quantity}}</div>
+    <div class="prepa-product-order">
+        <div class="product-order-infos">
+            <div class="product-order-name">
+                <p>{{this.product.name}}</p>
+                <p>Référence : {{this.product.reference}}</p>
+                <p>Format : {{this.product.size}}</p>
+            </div>
+            <div class="product-order-stock">
+                <div class="qty-txt">Qté. Livrée : <div class="qty">{{this.quantity}}</div></div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -33,3 +44,9 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.product-order-infos{
+    align-items: center;
+}
+</style>

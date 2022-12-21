@@ -1,10 +1,10 @@
 <template>
     <div id="head">
-        <div id="head-visible">
-            <img src="../assets/logo-sp-petit.png" alt="" class="logo-sp">
-            <img src="../assets/logo-mburger-petit.webp" alt="" class="logo-mb">
+        <div id="head-box">
+            <img src="../assets/3.jpg" alt="" id="logo">
             <h1 id="title">{{ title }}</h1>
         </div>
+        
     </div>
 </template>
 
@@ -16,33 +16,29 @@ export default {
 </script>
 
 <style scoped>
-    
     #head{
-        background-color: rgb(24, 24, 24);
+        position: relative;
+        width: 100%;
+        height: 50px;
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
     }
-    #head-visible{
+    #head-box{
+        margin: auto;
+        position: relative;
         width: 100%;
         max-width: 1200px;
-        margin: auto;
-        height: 50px;
+        height: 100%;
         display: flex;
+        justify-content: space-between;
         align-items: center;
-        justify-content: flex-end;
-        position: relative;
     }
-    .logo-sp{
-        width: 90px;
-        position: absolute;
-        left: 10px;
-    }
-    .logo-mb{
-        width: 130px;
-        position: absolute;
-        left: 120px;
+    #logo{
+        width: 60px;
+        margin-left: 20px;
     }
     #title{
         font-size: 1.6em;
-        color: white;
+        color: black;
         font-weight: 200;
         margin-right: 20px;
     }

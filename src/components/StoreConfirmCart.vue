@@ -1,9 +1,14 @@
 <template>
-    <div id="confirm-cart-back">
-        <div id="confirm-cart">
-            valider la commande?
-            <button @click="confirmOrder()">Valider</button>
-            <button @click="backToCart()">Retour au panier</button>
+    <div class="confirm-cart-back">
+        <div class="confirm-cart">
+            <div class="confirm-cart-box">
+                <p class="confirm-cart-title">Valider la commande?</p>
+                <div class="confirm-cart-buttons">
+                    <button class="confirm-cart-button" @click="confirmOrder()">Valider</button>
+                    <button class="cancel-cart-button" @click="backToCart()">Retour au panier</button>
+                </div>
+            </div>
+            
         </div>
     </div>
 </template>
@@ -61,19 +66,53 @@ export default {
 </script>
 
 <style scoped>
-#confirm-cart-back{
+.confirm-cart-back{
     position: absolute;
     z-index: 2;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.836);
+    background-color: rgba(179, 179, 179, 0.829);
     display: flex;
     justify-content: center;
     align-items: center;
 }
-#confirm-cart{
-    width: 70%;
-    height: 60%;
-    background-color: rgb(179, 179, 179);
+.confirm-cart{
+    position: relative;
+    width: 80%;
+    height: 30%;
+    max-width: 400px;
+    max-height: 250px;
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+}
+.confirm-cart-box{
+    text-align: center;
+}
+.confirm-cart-title{
+    margin-bottom: 20px;
+    font-size: 2em;
+}
+.confirm-cart-button{
+    margin-right: 10px;
+    border: none;
+    width: 100px;
+    cursor: pointer;
+    color: white;
+    background-image: linear-gradient(52deg, rgb(122, 218, 119),rgb(11, 100, 26));
+    height: 30px;
+    border-radius: 10px;
+}
+.cancel-cart-button{
+    margin-left: 10px;
+    border: none;
+    width: 130px;
+    cursor: pointer;
+    color: white;
+    background-image: linear-gradient(52deg, rgb(174,174,174),rgb(14,0,0));
+    height: 30px;
+    border-radius: 10px;
 }
 </style>

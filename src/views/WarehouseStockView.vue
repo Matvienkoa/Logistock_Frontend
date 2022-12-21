@@ -1,30 +1,27 @@
 <template>
-<Header :title="'Stock'"/>
+<Header :title="'Stocks'"/>
+  <div class="back-head">
+    <router-link to="/warehouse_home" class="back-button">retour</router-link>
+  </div>
   <div class="page">
-
     <router-link to="/warehouse_suppliers" class="menu-links">
       <div class="menu-bloc">
-        Voir mes fournisseurs
+        <img src="../assets/supplier.jpg" alt="" class="img-back">
+        <div class="title-card">Voir mes fournisseurs</div>
       </div>
     </router-link>
-
     <router-link to="/warehouse_products" class="menu-links">
       <div class="menu-bloc">
-        Voir mes produits
+        <img src="../assets/products.jpg" alt="" class="img-back">
+        <div class="title-card">Voir mes produits</div>
       </div>
     </router-link>
-
     <router-link to="/warehouse_inventory" class="menu-links">
       <div class="menu-bloc">
-        Gestion de mes stocks
+        <img src="../assets/stocks.jpg" alt="" class="img-back">
+        <div class="title-card">Gestion de mes stocks</div>
       </div>
     </router-link>
-
-    <router-link to="/warehouse_home">
-        retour
-    </router-link>
-    
-
   </div>
 <Footer/>
 </template>
@@ -41,22 +38,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-/* Page */
-.page{
-  width: 100%;
-  padding-top: 80px;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  flex-wrap: wrap;
-}
-/* Links */
-.menu-bloc{
-  width: 200px;
-  height: 100px;
-  background-color: rgb(221, 221, 221);
-  
-}
-</style>

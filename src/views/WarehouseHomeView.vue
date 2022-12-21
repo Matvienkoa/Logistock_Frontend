@@ -1,25 +1,26 @@
 <template>
-<Header :title="'Welcome'"/>
+<Header :title="'Accueil'"/>
   <div class="page">
-
     <router-link to="/warehouse_stock" class="menu-links">
       <div class="menu-bloc">
-        Stocks
+        <img src="../assets/stocks.jpg" alt="" class="img-back">
+        <div class="title-card">Mes Stocks</div> 
       </div>
     </router-link>
 
     <router-link to="/warehouse_preparation" class="menu-links">
       <div class="menu-bloc">
-        Préparations
+        <img src="../assets/preparation.jpg" alt="" class="img-back">
+        <div class="title-card">Préparation</div> 
       </div>
     </router-link>
 
     <router-link to="/warehouse_admin" class="menu-links">
       <div class="menu-bloc">
-        Admin
+        <img src="../assets/admin.jpg" alt="" class="img-back">
+        <div class="title-card">Admin</div>
       </div>
     </router-link>
-
   </div>
 <Footer/>
 </template>
@@ -36,22 +37,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-/* Page */
-.page{
-  width: 100%;
-  padding-top: 80px;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  flex-wrap: wrap;
-}
-/* Links */
-.menu-bloc{
-  width: 200px;
-  height: 100px;
-  background-color: rgb(221, 221, 221);
-  
-}
-</style>

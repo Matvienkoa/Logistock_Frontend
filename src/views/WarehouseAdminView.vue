@@ -1,28 +1,29 @@
 <template>
 <Header :title="'Admin'"/>
+  <div class="back-head">
+    <router-link to="/warehouse_home" class="back-button">retour</router-link>
+  </div>
   <div class="page">
     <router-link to="/warehouse_admin_stores" class="menu-links">
       <div class="menu-bloc">
-        Mes Points de vente
+        <img src="../assets/supplier.jpg" alt="" class="img-back">
+        <div class="title-card">Mes Points de vente</div>
       </div>
     </router-link>
 
     <router-link to="/warehouse_admin_sales" class="menu-links">
       <div class="menu-bloc">
-        Mes ventes
+        <img src="../assets/supplier.jpg" alt="" class="img-back">
+        <div class="title-card">Mes ventes</div>
       </div>
     </router-link>
 
     <router-link to="/warehouse_admin_stocks" class="menu-links">
       <div class="menu-bloc">
-        Valeur Marchande
+        <img src="../assets/supplier.jpg" alt="" class="img-back">
+        <div class="title-card">Valeur Marchande</div>
       </div>
     </router-link>
-
-    <router-link to="/warehouse_home">
-        retour
-    </router-link>
-
   </div>
 <Footer/>
 </template>
@@ -41,20 +42,5 @@ export default {
 </script>
 
 <style scoped>
-/* Page */
-.page{
-  width: 100%;
-  padding-top: 80px;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  flex-wrap: wrap;
-}
-/* Links */
-.menu-bloc{
-  width: 200px;
-  height: 100px;
-  background-color: rgb(221, 221, 221);
-  
-}
+
 </style>
