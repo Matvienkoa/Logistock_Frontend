@@ -2,7 +2,7 @@
 <Header :title="'Références'"/>
   <div class="back-head">
     <router-link to="/warehouse_stock" class="back-button">Retour</router-link>
-    <router-link to="/warehouse_add_product" class="cart-button">Ajouter un produit</router-link>
+    <router-link to="/warehouse_add_product" class="cart-button">Créer un produit</router-link>
   </div>
   <div class="search-box">
     <select v-model="categorySelected" name="category" id="" class="search-input">
@@ -19,6 +19,7 @@
     </select>
     <select v-model="supplierSelected" name="supplier" class="search-input">
       <option value="">Tous les Fournisseurs</option>
+      <option :value="null">Sans fournisseur attribué</option>
       <option v-for="supplier in getSuppliers" :key="supplier.id" :value="supplier.id">{{supplier.name}}</option>
     </select>
     <select v-model="onSale" name="onSale" class="search-input">
@@ -34,13 +35,14 @@
         <img v-if="product.onSale === 'yes'" class="circle-order" src="../assets/circle-validated.svg" alt="">
         <img v-if="product.onSale === 'no'" class="circle-order" src="../assets/circle-pending.svg" alt="">
         <div class="bloc-card-image-box">
-          <img :src="product.image" alt="" class="bloc-card-image">
+          <img v-if="product.image" :src="product.image" alt="" class="bloc-card-image">
+          <img v-if="!product.image" src="../assets/3.jpg" alt="" class="bloc-card-image no-pic">
         </div>
         <div class="bloc-card-infos-box">
           <h2>{{ product.name }}</h2>
-          <p>Réf : {{ product.reference }}</p>
-          <p>Format : {{ product.size }}</p>
-          <p>Colisage : {{product.packaging}} unités</p>
+          <p>Réf. {{ product.reference }}</p>
+          <p>Format : <span class="bold">{{ product.size }}</span></p>
+          <p>Colisage : <span class="bold">{{product.packaging}}</span> unité(s)</p>
         </div> 
       </router-link>
     </div>
@@ -117,11 +119,15 @@ export default {
   overflow: hidden;
   background-color: rgb(255, 255, 255);
   margin-left: 10px;
+  margin-bottom: 10px;
 }
 .bloc-card-image{
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+}
+.no-pic{
+  opacity: 0.6;
 }
 .bloc-card-infos-box{
   width: 93%;
@@ -136,7 +142,10 @@ export default {
 .bloc-card-infos-box h2{
   text-align: center;
   font-weight: 550;
-  margin-bottom: 2px;
+  margin: auto;
+  margin-bottom: 10px;
+  width: 95%;
+
 }
 .bloc-card-infos-box h3{
   text-align: center;

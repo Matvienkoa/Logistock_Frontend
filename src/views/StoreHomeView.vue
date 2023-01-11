@@ -1,5 +1,6 @@
 <template>
 <Header :title="'Accueil'"/>
+  <h1>Bonjour {{getStore.name}} </h1>
   <div class="page">
     <router-link to="/store_products" class="menu-links">
       <div class="menu-bloc">
@@ -20,12 +21,16 @@
 <script>
 import Header from '@/components/Header.vue'
 import Footer from '@/components/FooterStore.vue'
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'store_home',
   components: {
     Header,
     Footer,
+  },
+  computed: {
+      ...mapGetters(['getStore'])
   },
   created() {
     this.$store.dispatch('getProfile')
@@ -34,5 +39,15 @@ export default {
 </script>
 
 <style scoped>
-
+h1{
+  width: 90%;
+  max-width: 600px;
+  text-align: center;
+  margin: auto;
+  margin-top: 30px;
+  font-size: 1.5em;
+}
+.page{
+  padding-top: 40px;
+}
 </style>

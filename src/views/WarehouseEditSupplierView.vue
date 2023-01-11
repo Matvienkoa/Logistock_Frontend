@@ -1,13 +1,13 @@
 <template>
 <Header :title="'Fournisseur'"/>
   <div class="back-head">
-    <router-link v-if="getSupplier && getSupplier.id" :to="{name: 'warehouse_supplier', params: {id: getSupplier.id}}" class="back-button">retour</router-link>
+    <router-link v-if="getSupplier && getSupplier.id" :to="{name: 'warehouse_supplier', params: {id: getSupplier.id}}" class="back-button">Retour</router-link>
   </div>
   <div class="page-form">
 
     <div class="form">
-      <label class="label">Nom</label>
-      <input class="input" id="input-name" @input="cancelError()" v-model="name" type="text" placeholder="nom" />
+      <label class="label">Nom<span class="star">*</span></label>
+      <input class="input" id="input-name" @input="cancelError()" v-model="name" type="text" placeholder="Nom du fournisseur" />
       <label class="label">Adresse</label>
       <input class="input" v-model="adress" type="text" placeholder="Adresse" />
       <label class="label">Adresse (suite)</label>
@@ -16,6 +16,8 @@
       <input class="input" v-model="postalCode" type="text" placeholder="Code Postal" />
       <label class="label">Ville</label>
       <input class="input" v-model="city" type="text" placeholder="Ville" />
+      <label class="label">Contact</label>
+      <input class="input" v-model="contact" type="text" placeholder="Nom du contact" />
       <label class="label">Tél</label>
       <input class="input" v-model="tel" type="text" placeholder="Téléphone" />
       <label class="label">Mail</label>
@@ -47,7 +49,8 @@ export default {
             postalCode: "",
             city: "",
             tel: "",
-            mail: ""
+            mail: "",
+            contact: ""
         }
     },
     computed: {
@@ -55,12 +58,8 @@ export default {
     },
     methods: {
         cancelError() {
-            const emptyInput = document.querySelectorAll('.input');
-            emptyInput.forEach(input => {
-                if(input.value !== "") {
-                    input.classList.remove('empty')
-                }
-            })
+            const nameInput = document.getElementById('input-name');
+            nameInput.classList.remove('empty')
             this.error = ''
         },
         editSupplier() {
@@ -72,7 +71,8 @@ export default {
                 city: this.city,
                 tel: this.tel,
                 mail: this.mail,
-                id: this.getSupplier.id
+                id: this.getSupplier.id,
+                contact: this.contact
             })
             .then((res) => {
                 if(res.status === 201) {
@@ -81,12 +81,8 @@ export default {
             })
             .catch((error) => {
                 this.error = error.response.data;
-                const emptyInput = document.querySelectorAll('.input');
-                emptyInput.forEach(input => {
-                    if(input.value === "") {
-                        input.classList.add('empty')
-                    }
-                })
+                const nameInput = document.getElementById('input-name');
+                nameInput.classList.add('empty')
             })
         }
     },
@@ -98,6 +94,7 @@ export default {
         this.adress2 = res.data.adress2
         this.postalCode = res.data.postalCode
         this.city = res.data.city
+        this.contact = res.data.contact
         this.tel = res.data.tel
         this.mail = res.data.mail
       })
@@ -140,12 +137,22 @@ export default {
   padding-left: 10px;
   background-color: rgb(226, 226, 226);
 }
+.input:focus{
+  outline: none;
+}
 .valid-edit-button{
-  background-color: #38c550;
+  background-image: linear-gradient(52deg, rgb(122, 218, 119),rgb(11, 100, 26));
   padding: 5px 20px;
   color: white;
   border-radius: 10px;
   cursor: pointer;
   border: none;
+  height: 30px;
+}
+</style>
+
+<style scoped>
+.error{
+  margin-bottom: 20px;
 }
 </style>

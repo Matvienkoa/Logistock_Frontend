@@ -1,7 +1,7 @@
 <template>
 <StoreEditQuantity v-if="this.$store.state.modeEditQuantity === 'editQuantity'" :product="product" />
 <StoreConfirmCart v-if="this.$store.state.modeConfirmCart === 'confirmCart'" />
-<Header :title="'Welcome'"/>
+<Header :title="'Mon Panier'"/>
   <div class="back-head">
       <router-link to="/store_products" class="back-button">Retour</router-link>
       <div v-if="getCart.length > 0" @click="confirmCart()" class="cart-button">Valider mon panier</div>
@@ -90,19 +90,26 @@ export default {
         
     },
     getQuantity(productId) {
-        let cart = localStorage.getItem('cart')
-        cart = JSON.parse(cart)
-        const index = cart.findIndex(p => p.id === productId)
-        return cart[index].quantity
+        let cart = JSON.parse(localStorage.getItem('cart'))
+        if(cart != null) {
+          const index = cart.findIndex(p => p.id === productId)
+          return cart[index].quantity
+        }
+        
     }
   },
   created() {
     this.getProductsInCart()
+    this.$store.state.modeEditQuantity = ''
+    this.$store.state.modeConfirmCart = ''
   }
 }
 </script>
 
 <style scoped>
+.page{
+  padding-top: 30px;
+}
 .page-products{
   padding-top: 30px;
 }

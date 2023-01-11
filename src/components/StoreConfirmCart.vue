@@ -3,6 +3,20 @@
         <div class="confirm-cart">
             <div class="confirm-cart-box">
                 <p class="confirm-cart-title">Valider la commande?</p>
+                <select @change="cancelErrorSelect()" v-model="delivery" name="delivery" id="select-input" class="search-input required">
+                    <option value="">Séléctionnez le mode de livraison</option>
+                    <option value="livraison">Livraison</option>
+                    <option value="retrait">Retrait</option>
+                </select><span class="star">*</span>
+                <div class="applicant-box">
+                    <label class="applicant-label">Demandeur<span class="star">*</span></label>
+                    <input @input="cancelErrorApplicant()" v-model="applicant" id="applicant-input" class='applicant-input required' type="text" placeholder="Nom du demandeur">
+                </div>
+                <div class="comment-box">
+                    <p>Ajouter un commentaire :</p>
+                    <textarea v-model="commentStore" cols="30" rows="10"></textarea>
+                </div>
+                <div class="error" v-if="error">{{ error.message }}</div>
                 <div class="confirm-cart-buttons">
                     <button class="confirm-cart-button" @click="confirmOrder()">Valider</button>
                     <button class="cancel-cart-button" @click="backToCart()">Retour au panier</button>
@@ -21,21 +35,36 @@ export default {
     name: 'Store-confirm-cart',
     data() {
         return {
-            
+            delivery: "",
+            error: "",
+            commentStore: "",
+            applicant: ""
         }
     },
     computed: {
         ...mapGetters(['getProfile', 'getStore'])
     },
     methods: {
+        cancelErrorSelect() {
+            const select = document.getElementById('select-input');
+            select.classList.remove('empty')
+            this.error = ''
+        },
+        cancelErrorApplicant() {
+            const applicant = document.getElementById('applicant-input');
+            applicant.classList.remove('empty')
+            this.error = ''
+        },
         confirmOrder() {
             let cart = localStorage.getItem('cart')
             cart = JSON.parse(cart)
             console.log(cart)
             instance.post(`/order/`, {
-                delivery: 'livraison',
+                delivery: this.delivery,
                 status: 'pending',
-                storeId: this.getStore.id
+                storeId: this.getStore.id,
+                commentStore: this.commentStore,
+                applicant: this.applicant
             })
             .then((res) => {
                 if(res.status === 201) {
@@ -45,13 +74,22 @@ export default {
                             orderId: res.data.id,
                             quantity: product.quantity
                         })
-                        .then((res) => {
-                            if(res.status === 201) {
-                                localStorage.removeItem('cart')
-                                this.$router.push('/store_order_success')
-                            }
-                        })
                     })
+                    localStorage.removeItem('cart')
+                    this.$store.commit('RESET_CART')
+                    this.$store.state.modeConfirmCart = ""
+                    this.$router.push('/store_order_success')
+                }
+            })
+            .catch((error) => {
+                this.error = error.response.data;
+                const select = document.getElementById('select-input');
+                if(select.value === '') {
+                    select.classList.add('empty')
+                }
+                const applicant = document.getElementById('applicant-input');
+                if(applicant.value === '') {
+                    applicant.classList.add('empty')
                 }
             })
         },
@@ -67,7 +105,7 @@ export default {
 
 <style scoped>
 .confirm-cart-back{
-    position: absolute;
+    position: fixed;
     z-index: 2;
     width: 100%;
     height: 100%;
@@ -79,9 +117,9 @@ export default {
 .confirm-cart{
     position: relative;
     width: 80%;
-    height: 30%;
-    max-width: 400px;
-    max-height: 250px;
+    height: 60%;
+    max-width: 450px;
+    max-height: 400px;
     background-color: rgb(255, 255, 255);
     display: flex;
     justify-content: center;
@@ -89,11 +127,71 @@ export default {
     border-radius: 10px;
 }
 .confirm-cart-box{
+    width: 100%;
     text-align: center;
 }
 .confirm-cart-title{
+    margin: auto;
+    margin-bottom: 10px;
+    font-size: 1.8em;
+    width: 95%;
+}
+.search-input{
+  width: 250px;
+  max-width: 250px;
+  height: 30px;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  color: white;
+  font-size: 0.9em;
+  background-image: linear-gradient(52deg, rgb(174,174,174),rgb(14,0,0));
+  margin-bottom: 15px;
+}
+.search-input:focus{
+  outline: none;
+}
+.search-input option{
+  color: #000;
+}
+.applicant-box{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+    max-width: 300px;
+    margin: auto;
+}
+.applicant-label{
+
+}
+.applicant-input{
     margin-bottom: 20px;
-    font-size: 2em;
+    margin-top: 5px;
+    width: 100%;
+    border: solid 1px black;
+    border-radius: 5px;
+    height: 25px;
+    padding: 0 8px;
+}
+.applicant-input:focus{
+    outline: none;
+}
+.comment-box textarea{
+    height: 80px;
+    width: 80%;
+    max-width: 300px;
+    resize: none;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    margin-top: 5px;
+    padding: 5px 8px;
+}
+.comment-box textarea:focus{
+    outline: none;
+}
+.confirm-cart-buttons{
+    margin-top: 10px;
 }
 .confirm-cart-button{
     margin-right: 10px;

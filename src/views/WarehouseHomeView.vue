@@ -3,8 +3,8 @@
   <div class="page">
     <router-link to="/warehouse_stock" class="menu-links">
       <div class="menu-bloc">
-        <img src="../assets/stocks.jpg" alt="" class="img-back">
-        <div class="title-card">Mes Stocks</div> 
+        <img src="../assets/warehouse.jpg" alt="" class="img-back">
+        <div class="title-card">Entrepôt</div> 
       </div>
     </router-link>
 
@@ -22,6 +22,7 @@
       </div>
     </router-link>
   </div>
+  <div class="bottom"></div>
 <Footer/>
 </template>
 
@@ -37,3 +38,9 @@ export default {
   }
 }
 </script>
+
+<style>
+.bottom{
+  margin-bottom: 60px;
+}
+</style>

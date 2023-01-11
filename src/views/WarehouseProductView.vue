@@ -6,7 +6,8 @@
   <div class="page-mono">
     <div class="page-mono-product">
       <div class="product-image-bloc">
-        <img :src="getProduct.image" alt="" class="product-image">
+        <img v-if="getProduct.image" :src="getProduct.image" alt="" class="product-image">
+        <img v-if="!getProduct.image" src="../assets/3.jpg" alt="" class="product-image no-pic">
       </div>
       
       <div class="product-infos">
@@ -19,14 +20,17 @@
         <p>Fournisseur : {{supplier}}</p>
         <p>Délai d'approvisionnement : {{getProduct.leadTime}}</p>
         <p>TVA : {{getProduct.tva}} %</p>
-        <p v-if="getProduct.onSale === 'yes'">Disponible à la Vente</p>
-        <p v-if="getProduct.onSale === 'no'">Indisponible à la Vente</p>
+        <p class="on-sale" v-if="getProduct.onSale === 'yes'">Disponible à la Vente<img class="circle-order" src="../assets/circle-validated.svg" alt=""></p>
+        <p class="on-sale" v-if="getProduct.onSale === 'no'">Indisponible à la Vente<img class="circle-order" src="../assets/circle-pending.svg" alt=""></p>
+
+        
+        
       </div>
     </div>
     
     <div class="page-mono-buttons">
       <router-link v-if="getProduct && getProduct.id" :to="{name: 'warehouse_edit_product', params: {id: getProduct.id}}" class="edit-button">
-        modifier
+        Modifier
       </router-link>
       <div v-if="getProduct.onSale === 'yes'" class="delete-button" @click="switchToConfirm()">Retirer</div>
       <div v-if="getProduct.onSale === 'no'" class="delete-button" @click="switchToConfirm()">Rendre disponible</div>
@@ -46,6 +50,7 @@
         </div>
     </div>
   </div>
+  <div class="bottom"></div>
 <Footer/>
 </template>
 
@@ -102,10 +107,15 @@ export default {
       this.$store.dispatch('getProduct', this.$route.params.id)
       .then((res) => {
         console.log(res.data)
-        this.$store.dispatch('getSupplier', res.data.supplierId)
-        .then((res) => {
-          this.supplier = res.data.name
-        })
+        if(res.data.supplierId !== null) {
+          this.$store.dispatch('getSupplier', res.data.supplierId)
+          .then((res) => {
+            this.supplier = res.data.name
+          })
+        } else {
+          this.supplier = 'Pas de fournisseur attribué'
+        }
+        
       })
   },
 }
@@ -126,7 +136,8 @@ export default {
 }
 .product-image{
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: contain;
 }
 .product-infos{
   width: 60%;
@@ -134,6 +145,9 @@ export default {
 .mono-product-name{
   text-align: center;
   margin-bottom: 20px;
+}
+.on-sale{
+  display: flex;
 }
 @media (min-width: 700px) {
   .page-mono-product{
@@ -144,7 +158,7 @@ export default {
   .product-image-bloc{
     width: 300px;
     height: 300px;
-    margin-right: 20px;
+    margin-right: 40px;
   }
   .product-infos{
     width: unset;

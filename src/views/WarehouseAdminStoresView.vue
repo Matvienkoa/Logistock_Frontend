@@ -1,7 +1,7 @@
 <template>
 <Header :title="'Points de ventes'"/>
     <div class="back-head">
-        <router-link to="/warehouse_admin" class="back-button">retour</router-link>
+        <router-link to="/warehouse_admin" class="back-button">Retour</router-link>
     </div>
     <div class="page">
         <router-link v-for="store in getStores" :key="store.id" :to="{name: 'warehouse_admin_store', params: {id: store.id}}" class="menu-links-list">
@@ -10,7 +10,7 @@
             </div>
         </router-link>
     </div>
-    
+    <div class="bottom"></div>
 <Footer/>
 </template>
 
@@ -35,3 +35,9 @@ export default {
     },
 }
 </script>
+
+<style scoped>
+.menu-links-list{
+  max-width: 600px;
+}
+</style>

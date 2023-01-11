@@ -1,12 +1,14 @@
 <template>
 <StoreAddProduct v-if="this.$store.state.modeAddProduct === 'addProduct'" :product="product" />
-<Header :title="'Welcome'"/>
+<Header :title="'Commander'"/>
   <div class="back-head">
     <router-link to="/store_home" class="back-button">Retour</router-link>
     <router-link to="/store_cart" class="cart-button-icon">
       <img v-if="getCartForIcon.length > 0" src="../assets/cart.svg" class="cart-icon">
-      <img v-if="getCartForIcon.length <= 0" src="../assets/cart-grey.svg" class="cart-icon">
     </router-link>
+    <div class="cart-button-icon-closed">
+      <img v-if="getCartForIcon.length <= 0" src="../assets/cart-grey.svg" class="cart-icon">
+    </div>
   </div>
   <div class="page">
     <div class="search-box">
@@ -28,7 +30,8 @@
         <div v-if="(product.category === categorySelected || categorySelected === '') && product.onSale === 'yes'" class="bloc-card">
           <div class="bloc-card-top">
             <div class="bloc-card-image-box">
-              <img :src="product.image" alt="" class="bloc-card-image">
+              <img v-if="product.image" :src="product.image" alt="" class="bloc-card-image">
+              <img v-if="!product.image" src="../assets/3.jpg" alt="" class="bloc-card-image no-pic">
             </div>
             <div class="bloc-add-product">
               <img v-if="checkProduct(product.id) === -1 && checkAvailability(product.id) > 0" @click="addProduct(product.id)" src="../assets/add-cart.svg" class="add-cart-icon">
@@ -42,10 +45,10 @@
           <div class="bloc-card-infos-box">
             <h2 class="name">{{ product.name }}</h2>
             <h3>{{ product.description }}</h3>
-            <p>Réf. : {{ product.reference }}</p>
-            <p>Catégorie : {{ product.category }}</p>
-            <p>Colisage : {{ product.packaging }} / Colis</p>
-            <p>Format : {{ product.size }}</p>
+            <p>Réf. {{ product.reference }}</p>
+            <!-- <p>Catégorie : {{ product.category }}</p> -->
+            <p>Colisage : <span class="bold">{{ product.packaging }}</span> unité(s)</p>
+            <p>Format : <span class="bold">{{ product.size }}</span></p>
           </div>
         </div>
       </div>
@@ -140,6 +143,7 @@ export default {
 .page-products{
   padding-top: 30px;
 }
+
 .add-cart-icon{
   height: 30px;
   margin-right: 40px;

@@ -1,8 +1,8 @@
 <template>
 <Header :title="'Fournisseurs'"/>
   <div class="back-head">
-    <router-link to="/warehouse_stock" class="back-button">retour</router-link>
-    <router-link to="/warehouse_add_supplier" class="cart-button">Ajouter un fournisseur</router-link>
+    <router-link to="/warehouse_stock" class="back-button">Retour</router-link>
+    <router-link to="/warehouse_add_supplier" class="cart-button">Créer un fournisseur</router-link>
   </div>
   <div class="page">
     <div class="no-result" v-if="getSuppliers.length === 0">Vous n'avez pas enregistré de Fournisseur</div>
@@ -12,6 +12,7 @@
       </div>
     </router-link>
   </div>
+  <div class="bottom"></div>
 <Footer/>
 </template>
 
@@ -36,11 +37,7 @@ export default {
 </script>
 
 <style scoped>
-@media (min-width: 700px) {
-  .page{
-    flex-direction: row;
-    justify-content: space-evenly;
-    flex-wrap: wrap;
-  }
+.menu-links-list{
+  max-width: 600px;
 }
 </style>

@@ -1,12 +1,17 @@
 <template>
-<Header :title="'Welcome'"/>
+<Header :title="'Mes Commandes'"/>
   <div class="back-head">
     <router-link to="/store_home" class="back-button">Retour</router-link>
   </div>
   <div class="page">
   
     <router-link class="store-orders" v-for="order in getStore.orders" :key="order.id" :to="{name: 'store_order', params: {id: order.id}}">
-      <p class="order-date">Le : {{moment(order.createdAt).format('L')}}</p>
+      <div class="prepa-orders-infos">
+          <p class="order-date">Le : <span class="bold">{{moment(order.createdAt).format('L')}}</span></p>
+          <p>N° : <span class="bold">{{order.id}}</span></p>
+          <p>Livraison : <span class="bold">{{order.delivery}}</span></p>
+      </div>
+      
       <div class="order-status" v-if="order.status === 'validated'">
         Validée
         <img class="circle-order" src="../assets/circle-validated.svg" alt="">
@@ -16,9 +21,8 @@
         <img class="circle-order" src="../assets/circle-pending.svg" alt="">
       </div>
     </router-link>
-      
-    
   </div>
+  <div class="bottom"></div>
 <Footer/>
 </template>
 
@@ -70,6 +74,7 @@ export default {
   text-align: right;
   display: flex;
   align-items: center;
+  margin-left: 10px;
 }
 .circle-order{
   width: 17px;

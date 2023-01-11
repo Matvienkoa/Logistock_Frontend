@@ -37,7 +37,7 @@ export default {
         margin-left: 20px;
     }
     #title{
-        font-size: 1.6em;
+        font-size: 1.4em;
         color: black;
         font-weight: 200;
         margin-right: 20px;

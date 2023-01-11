@@ -1,28 +1,29 @@
 <template>
-<Header :title="'Stocks'"/>
+<Header :title="'Entrepôt'"/>
   <div class="back-head">
-    <router-link to="/warehouse_home" class="back-button">retour</router-link>
+    <router-link to="/warehouse_home" class="back-button">Retour</router-link>
   </div>
   <div class="page">
     <router-link to="/warehouse_suppliers" class="menu-links">
       <div class="menu-bloc">
-        <img src="../assets/supplier.jpg" alt="" class="img-back">
-        <div class="title-card">Voir mes fournisseurs</div>
+        <img src="../assets/supplier2.jpg" alt="" class="img-back">
+        <div class="title-card">Fournisseurs</div>
       </div>
     </router-link>
     <router-link to="/warehouse_products" class="menu-links">
       <div class="menu-bloc">
-        <img src="../assets/products.jpg" alt="" class="img-back">
-        <div class="title-card">Voir mes produits</div>
+        <img src="../assets/products2.jpg" alt="" class="img-back">
+        <div class="title-card">Références</div>
       </div>
     </router-link>
     <router-link to="/warehouse_inventory" class="menu-links">
       <div class="menu-bloc">
         <img src="../assets/stocks.jpg" alt="" class="img-back">
-        <div class="title-card">Gestion de mes stocks</div>
+        <div class="title-card">Stocks</div>
       </div>
     </router-link>
   </div>
+  <div class="bottom"></div>
 <Footer/>
 </template>
 

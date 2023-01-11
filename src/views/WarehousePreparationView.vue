@@ -1,7 +1,7 @@
 <template>
 <Header :title="'Préparation'"/>
   <div class="back-head">
-    <router-link to="/warehouse_home" class="back-button">retour</router-link>
+    <router-link to="/warehouse_home" class="back-button">Retour</router-link>
   </div>
   <div class="page">
     
@@ -13,7 +13,7 @@
     </router-link>
     <router-link to="/warehouse_preparation_validated_orders" class="menu-links">
       <div class="menu-bloc">
-        <img src="../assets/supplier.jpg" alt="" class="img-back">
+        <img src="../assets/order-validated.jpg" alt="" class="img-back">
         <div class="title-card">Commandes validées</div>
       </div>
     </router-link>

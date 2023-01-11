@@ -1,7 +1,7 @@
 <template>
 <Header :title="'Fournisseur'"/>
   <div class="back-head">
-    <router-link to="/warehouse_suppliers" class="back-button">retour</router-link>
+    <router-link to="/warehouse_suppliers" class="back-button">Retour</router-link>
   </div>
   <div class="page-mono">
     <div class="page-mono-bloc">
@@ -11,18 +11,20 @@
         <p>{{getSupplier.adress2}}</p>
         <p>{{getSupplier.postalCode}}</p>
         <p>{{getSupplier.city}}</p>
+        <p>Contact : {{getSupplier.contact}}</p>
         <p>{{getSupplier.tel}}</p>
         <p>{{getSupplier.mail}}</p>
       </div>
     </div>
     <div v-if="getSupplier.name !== 'Autre'" class="page-mono-buttons">
       <router-link v-if="getSupplier && getSupplier.id" :to="{name: 'warehouse_edit_supplier', params: {id: getSupplier.id}}" class="edit-button">
-        modifier
+        Modifier
       </router-link>
       <div class="delete-button" @click="switchToConfirm()">Supprimer</div>
     </div>
     <div class="show-confirm" v-if="mode === 'confirm'">
         <p class="confirm-text">Supprimer le fournisseur?</p>
+        <p class="confirm-text">Attention, tous les produits liés à ce fournisseur se retrouveront "sans fournisseur"!</p>
         <div class="choice-box">
             <button class="confirm-button" @click="deleteSupplier()">Supprimer</button>
             <div class="cancel-button" @click="cancelConfirm()">Annuler</div>
@@ -131,6 +133,14 @@ export default {
 }
 .show-confirm{
   margin-top: 15px;
+  width: 80%;
+}
+.confirm-text{
+  text-align: center;
+  width: 90%;
+  margin: auto;
+  margin-top: 5px;
+  font-weight: bold;
 }
 
 .choice-box{

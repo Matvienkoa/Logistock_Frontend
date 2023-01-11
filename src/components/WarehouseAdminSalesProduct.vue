@@ -1,18 +1,13 @@
 <template>
-    <div class="link-products">
-        <div class="title-box-products">
-            <div class="img-box-products">
-            <img :src="product.image" alt="" class="img-products">
+    <div class="admin-product-sale">
+        <div class="product-sale-infos">
+            <div class="product-sale-name">
+                <p class="bold">{{ product.name }}</p>
+                <p>Référence : {{ product.reference }}</p>
+                <p>Format : {{ product.size }}</p>
             </div>
-            <div>{{ product.name }}</div>
-        </div>
-        <div class="infos-box-products">
-            <div class="infos-products">
-            <div>Réf : {{ product.reference }}</div>
-            <div>Format : {{ product.size }}</div>
-            </div>
-            <div class="stocks-products">
-            <div>Ventes : {{ quantity }}</div>
+            <div class="product-sale-sales">
+                <div class="sale-txt">Ventes : <div class="sale">{{quantity}}</div></div>
             </div>
         </div>
     </div>
@@ -28,7 +23,7 @@ export default {
     data() {
         return {
             product: "",
-            quantity: 0,
+            quantity: 0
         }
     },
     computed: {
@@ -54,7 +49,44 @@ export default {
 </script>
 
 <style scoped>
-.link-products{
+.admin-product-sale{
     width: 100%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+    border-radius: 5px;
+    padding: 10px 0;
+}
+.product-sale-infos{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.product-sale-name{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 10px;
+}
+.product-sale-sales{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    color: green;
+    margin-right: 10px;
+}
+.sale-txt{
+  display: flex;
+  align-items: center;
+}
+.sale{
+  font-size: 2em;
+  font-weight: 600;
+  margin-left: 5px;
 }
 </style>

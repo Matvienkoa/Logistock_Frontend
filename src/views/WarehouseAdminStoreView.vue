@@ -1,12 +1,12 @@
 <template>
-<Header :title="getStore.name"/>
+<Header :title="'Point de vente'"/>
   <div class="back-head">
-    <router-link to="/warehouse_admin_stores" class="back-button">retour</router-link>
+    <router-link to="/warehouse_admin_stores" class="back-button">Retour</router-link>
   </div>
   <div class="page-mono">
-    <div class="page-mono-store">
-      <div class="store-infos">
-        <h1>{{ getStore.name }}</h1>
+    <div class="page-mono-bloc">
+      <h1 class="page-mono-title">{{ getStore.name }}</h1>
+      <div class="page-mono-infos">
         <p>Numéro : {{getStore.number}}</p>
         <p>{{getStore.adress}}</p>
         <p>{{getStore.adress2}}</p>
@@ -15,8 +15,6 @@
         <p>{{getStore.tel}}</p>
       </div>
     </div>
-
-    
   </div>
 <Footer/>
 </template>
@@ -48,27 +46,3 @@ export default {
   },
 }
 </script>
-
-<style>
-.page-mono-store{
-  width: 100%;
-  margin: auto;
-  max-width: 800px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.store-infos{
-  width: 80%;
-}
-@media (min-width: 700px) {
-  .page-mono-store{
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-  }
-  .store-infos{
-    width: unset;
-  }
-}
-</style>

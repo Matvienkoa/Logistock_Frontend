@@ -1,9 +1,9 @@
 <template>
-<Header :title="'Inventaire Produit'"/>
+<Header :title="'Stock Produit'"/>
   <div class="back-head">
-    <router-link to="/warehouse_inventory" class="back-button">retour</router-link>
+    <router-link to="/warehouse_inventory" class="back-button">Retour</router-link>
     <router-link v-if="getProduct && getProduct.id" :to="{name: 'warehouse_inventory_add_stock_product', params: {id: getProduct.id}}" class="cart-button">
-        Ajouter un stock
+        Créer un stock
     </router-link>
   </div>
   <div class="page">
@@ -38,6 +38,7 @@
       </div>
     </div>
   </div>
+  <div class="bottom"></div>
 <Footer/>
 </template>
 

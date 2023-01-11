@@ -30,7 +30,7 @@ export default {
             this.$store.state.modeEditProductQuantity = ''
         },
         editOrderDetails() {
-            if(this.quantity === null || this.quantity <= 0 || this.quantity === "") {
+            if(this.quantity === null || this.quantity < 0 || this.quantity === "") {
                 this.error = "Merci d'ajouter une quantité valable"
             } else {
                 if(this.quantity <= this.stock) {
@@ -79,7 +79,8 @@ export default {
     width: 60px;
 }
 .error{
-    margin-bottom: 5px;
+    margin-top: 5px;
+    margin-bottom: 10px;
 }
 .new-order-edit-quantity-buttons{
     display: flex;

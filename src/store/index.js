@@ -135,12 +135,24 @@ export default createStore({
     },
     SET_ORDERS_PENDING: function (state, order) {
       state.ordersPending.push(order)
+      function SortTime(a, b) {
+        let da = new Date(a.createdAt);
+        let db = new Date(b.createdAt);
+        return (db > da) ? 1 : -1;
+      }
+      state.ordersPending.sort(SortTime)
     },
     RESET_ORDERS_VALIDATED: function (state) {
       state.ordersValidated = []
     },
     SET_ORDERS_VALIDATED: function (state, order) {
       state.ordersValidated.push(order)
+      function SortTime(a, b) {
+        let da = new Date(a.createdAt);
+        let db = new Date(b.createdAt);
+        return (db > da) ? 1 : -1;
+      }
+      state.ordersValidated.sort(SortTime)
     },
     SET_PRODUCTS_IN_ORDER: function (state, product) {
       state.productsInOrder.push(product)

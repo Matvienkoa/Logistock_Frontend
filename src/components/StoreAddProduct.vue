@@ -88,7 +88,7 @@ export default {
 
 <style scoped>
 .add-product-back{
-    position: absolute;
+    position: fixed;
     z-index: 2;
     width: 100%;
     height: 100%;

@@ -1,7 +1,7 @@
 <template>
 <Header :title="'Stocks'"/>
   <div class="back-head">
-    <router-link to="/warehouse_stock" class="back-button">retour</router-link>
+    <router-link to="/warehouse_stock" class="back-button">Retour</router-link>
   </div>
   <div class="page">
     <div class="search-box">
@@ -19,6 +19,7 @@
       </select>
       <select v-model="supplierSelected" name="supplier" class="search-input">
         <option value="">Tous les Fournisseurs</option>
+        <option :value="null">Sans fournisseur attribué</option>
         <option v-for="supplier in getSuppliers" :key="supplier.id" :value="supplier.id">{{supplier.name}}</option>
       </select>
       <select v-model="onSale" name="onSale" class="search-input">
@@ -35,7 +36,8 @@
           <img v-if="product.onSale === 'no'" class="circle-order" src="../assets/circle-pending.svg" alt="">
           <div class="title-box-products">
             <div class="img-box-products">
-              <img :src="product.image" alt="" class="img-products">
+              <img v-if="product.image" :src="product.image" alt="" class="img-products">
+              <img v-if="!product.image" src="../assets/3.jpg" alt="" class="img-products no-pic">
             </div>
             <div>{{ product.name }}</div>
           </div>
@@ -46,13 +48,15 @@
               <div>Colisage : {{ product.packaging }}</div>
             </div>
             <div class="stocks-products">
-              <div>Stocks : {{ getTotalStock(product.stocks) }}</div>
+              <div v-if="getTotalStock(product.stocks) > 0" class="stocks-products-ok">Stocks : {{ getTotalStock(product.stocks) }}</div>
+              <div v-if="getTotalStock(product.stocks) <= 0" class="stocks-products-not-ok">Rupture</div>
             </div>
           </div>
         </router-link>
       </div>
     </div>
   </div>
+  <div class="bottom"></div>
 <Footer/>
 </template>
 
@@ -118,20 +122,27 @@ export default {
 .img-box-products{
   width: 60px;
   height: 60px;
-  border-radius: 30px;
   overflow: hidden;
   margin-right: 20px;
 }
 .img-products{
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 .infos-box-products{
   width: 90%;
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.stocks-products-ok{
+  color: green;
+  font-weight: 700;
+}
+.stocks-products-not-ok{
+  color: red;
+  font-weight: 700;
 }
 </style>
 

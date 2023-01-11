@@ -2,7 +2,7 @@
 <Header :title="'Référence'"/>
   <div class="back-head">
     <router-link v-if="getProduct && getProduct.id" :to="{name: 'warehouse_product', params: {id: getProduct.id}}" class="back-button">
-        retour
+        Retour
     </router-link>
   </div>
   <div class="page-form">
@@ -13,14 +13,14 @@
     <div class="form">
       <label class="label">Image</label>
       <input class="file-input" id="file" @change="onFileSelected" type="file" ref="imageUrl" name="file">
-      <label class="label">Référence</label>
-      <input class="input" @input="cancelError()" v-model="reference" type="text" placeholder="Référence Produit" />
-      <label class="label">Nom</label>
-      <input class="input" @input="cancelError()" v-model="name" type="text" placeholder="Nom du produit" />
+      <label class="label">Référence<span class="star">*</span></label>
+      <input class="input required" @input="cancelError()" v-model="reference" type="text" placeholder="Référence Produit" />
+      <label class="label">Nom<span class="star">*</span></label>
+      <input class="input required" @input="cancelError()" v-model="name" type="text" placeholder="Nom du produit" />
       <label class="label">Déscription</label>
-      <input class="input" @input="cancelError()" v-model="description" type="text" placeholder="Déscription" />
-      <label class="label">Catégorie</label>
-      <select @input="cancelError()" v-model="category" name="category" id="" class="input">
+      <input class="input" v-model="description" type="text" placeholder="Déscription" />
+      <label class="label">Catégorie<span class="star">*</span></label>
+      <select @input="cancelError()" v-model="category" name="category" id="" class="input required">
         <option value="epicerie">Epicerie</option>
         <option value="frais">Frais</option>
         <option value="alcool">Alcool</option>
@@ -31,20 +31,20 @@
         <option value="materiel">Petits Matériels</option>
         <option value="autre">Autre</option>
       </select>
-      <label class="label">Colisage</label>
-      <input class="input" v-model="colisage" type="number" placeholder="Colisage" />
-      <label class="label">Délai d'appro</label>
-      <input class="input" v-model="leadTime" type="number" placeholder="Délai d'appro (en J)" />
-      <label class="label">TVA</label>
-      <select @input="cancelError()" class="input" v-model="tva" name="tva" id="">
+      <label class="label">Colisage<span class="star">*</span></label>
+      <input @input="cancelError()" class="input required" v-model="colisage" type="number" placeholder="Nombre d'unité(s) par colis" />
+      <label class="label">Délai d'appro<span class="star">*</span></label>
+      <input @input="cancelError()" class="input required" v-model="leadTime" type="number" placeholder="Délai d'appro (en Jour)" />
+      <label class="label">TVA<span class="star">*</span></label>
+      <select @input="cancelError()" class="input required" v-model="tva" name="tva" id="">
         <option value="5,5">5,5 %</option>
         <option value="10">10 %</option>
         <option value="20">20 %</option>
       </select>
-      <label class="label">Format</label>
-      <input class="input" v-model="format" type="text" placeholder="Format" />
-      <label class="label">Fournisseur</label>
-      <select @input="cancelError()" class="input" v-model="supplier" name="supplier" id="">
+      <label class="label">Format<span class="star">*</span></label>
+      <input @input="cancelError()" class="input required" v-model="format" type="text" placeholder="Format du produit (CL, GR, CM...)" />
+      <label class="label">Fournisseur<span class="star">*</span></label>
+      <select @input="cancelError()" class="input required" v-model="supplier" name="supplier" id="">
         <option v-for="supplier in getSuppliers" :key="supplier.id" :value="supplier.id">{{ supplier.name }}</option>
       </select>
       <div class="error" v-if="error">{{ error.message }}</div>
@@ -87,7 +87,7 @@ export default {
     },
     methods: {
         cancelError() {
-            const emptyInput = document.querySelectorAll('.input');
+            const emptyInput = document.querySelectorAll('.required');
             emptyInput.forEach(input => {
                 if(input.value !== "") {
                     input.classList.remove('empty')
@@ -119,7 +119,7 @@ export default {
             })
             .catch((error) => {
               this.error = error.response.data;
-              const emptyInput = document.querySelectorAll('.input');
+              const emptyInput = document.querySelectorAll('.required');
               emptyInput.forEach(input => {
                   if(input.value === "") {
                       input.classList.add('empty')
@@ -154,12 +154,10 @@ export default {
 /* Product */
 .product-img{
   width: 200px;
+  margin-bottom: 30px;
 }
 /* Errors input */
-  .empty{
-    border: solid 2px #fa4c67;
-  }
-  #error{
-    color: #fa4c67;
-  }
+.error{
+  margin-bottom: 10px;
+}
 </style>
