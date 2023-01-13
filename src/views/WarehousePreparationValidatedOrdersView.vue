@@ -13,7 +13,12 @@
                 <p>N° : <span class="bold">{{order.id}}</span></p>
                 <p>Mode de livraison : <span class="bold">{{order.delivery}}</span></p>
             </div>
-            <p>De : {{order.storeName}}</p>
+            <div class="prepa-orders-infos">
+                <p>De : {{order.storeName}}</p>
+                <p v-if="order.billed === 'yes'" class="billed">Facturée</p>
+                <p v-if="order.billed === 'no'" class="no-billed">A facturer</p>
+            </div>
+            
         </router-link>
     </div>
     <div class="bottom"></div>
@@ -56,5 +61,17 @@ export default {
 <style scoped>
 .no-ordersPending{
     margin-top: 30px;
+}
+.no-billed{
+    align-self: flex-end;
+    color: #ea510b;
+    margin-top: 5px;
+    font-weight: 600;
+}
+.billed{
+    align-self: flex-end;
+    color: rgb(19, 185, 19);
+    margin-top: 5px;
+    font-weight: 600;
 }
 </style>

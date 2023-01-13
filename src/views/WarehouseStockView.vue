@@ -19,7 +19,13 @@
     <router-link to="/warehouse_inventory" class="menu-links">
       <div class="menu-bloc">
         <img src="../assets/stocks.jpg" alt="" class="img-back">
-        <div class="title-card">Stocks</div>
+        <div class="title-card">Stocks par Référence</div>
+      </div>
+    </router-link>
+    <router-link to="/warehouse_date_stocks" class="menu-links">
+      <div class="menu-bloc">
+        <img src="../assets/date.jpg" alt="" class="img-back">
+        <div class="title-card">Stocks à dates courtes</div>
       </div>
     </router-link>
   </div>

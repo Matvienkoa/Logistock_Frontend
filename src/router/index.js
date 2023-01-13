@@ -18,6 +18,7 @@ import WarehouseInventory from '../views/WarehouseInventoryView'
 import WarehouseInventoryProduct from '../views/WarehouseInventoryProductView'
 import WarehouseInventoryAddStockProduct from '../views/WarehouseInventoryAddStockProductView'
 import WarehouseInventoryEditStockProduct from '../views/WarehouseInventoryEditStockProductView'
+import WarehouseDateStocks from '../views/WarehouseDateStocksView'
 // Warehouse preparation
 import WarehousePreparation from '../views/WarehousePreparationView'
 import WarehousePreparationNewOrders from '../views/WarehousePreparationNewOrdersView'
@@ -123,6 +124,12 @@ const routes = [
     path: '/warehouse_inventory_edit_stock_product/:id',
     name: 'warehouse_inventory_edit_stock_product',
     component: WarehouseInventoryEditStockProduct
+  },
+  // Date Stocks
+  {
+    path: '/warehouse_date_stocks',
+    name: 'warehouse_date_stocks',
+    component: WarehouseDateStocks
   },
 
   // ---------- Warehouse Preparation ----------

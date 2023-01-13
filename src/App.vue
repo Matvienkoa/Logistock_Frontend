@@ -113,6 +113,7 @@ select{
   opacity: 0.6;
 }
 .title-card{
+  position: relative;
   width: 70%;
   height: 35px;
   margin-bottom: 20px;

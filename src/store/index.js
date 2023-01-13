@@ -25,7 +25,10 @@ export default createStore({
     modeConfirmOrder: "",
     productsInOrder: [],
     sales: [],
-    cartForIcon: []
+    cartForIcon: [],
+    modeBillOrder: "",
+    ordersToBill: [],
+    stocks: []
   },
   getters: {
     getCartForIcon: (state) => {
@@ -78,6 +81,12 @@ export default createStore({
     },
     getSales: (state) => {
       return state.sales
+    },
+    getOrdersToBill: (state) => {
+      return state.ordersToBill
+    },
+    getStocks: (state) => {
+      return state.stocks
     }
   },
   mutations: {
@@ -162,6 +171,12 @@ export default createStore({
     },
     SET_SALES: function (state, sales) {
       state.sales = sales
+    },
+    SET_ORDERS_TO_BILL: function (state, orders) {
+      state.ordersToBill = orders
+    },
+    SET_STOCKS: function (state, stocks) {
+      state.stocks = stocks
     }
   },
   actions: {
@@ -417,6 +432,30 @@ export default createStore({
     getCartForIcon: ({ commit }) => {
       let cart = JSON.parse(localStorage.getItem('cart'))
       commit('SET_CART_FOR_ICON', cart)
-    }
+    },
+    getOrdersToBill: ({ commit }) => {
+      return new Promise((resolve, reject) => {
+        instance.get(`/order/to-bill`)
+          .then(function (response) {
+            commit('SET_ORDERS_TO_BILL', response.data)
+            resolve(response)
+          })
+          .catch(function (error) {
+            reject(error);
+          });
+      })
+    },
+    getStocks: ({ commit }) => {
+      return new Promise((resolve, reject) => {
+        instance.get(`/stock/`)
+          .then(function (response) {
+            commit('SET_STOCKS', response.data)
+            resolve(response)
+          })
+          .catch(function (error) {
+            reject(error);
+          });
+      })
+    },
   }
 })
