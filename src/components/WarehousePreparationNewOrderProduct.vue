@@ -1,5 +1,5 @@
 <template>
-    <div class="prepa-product-order">
+    <div :id="this.id" class="prepa-product-order">
         <div class="product-order-infos">
             <div v-if="product !== null" class="product-order-name">
                 <p class="bold">{{this.product.name}}</p>
@@ -11,7 +11,8 @@
                 <p>Ce produit n'existe plus</p>
             </div>
             <div class="product-order-stock">
-                <div class="qty-txt">Qté. Demandée : <div class="qty">{{this.quantity}}</div></div>
+                <div class="qty-txt">Qté. <div class="qty">{{this.quantity}} </div></div>
+                <div class="req-txt"><span class="req">{{this.request}}</span>commandé(s)</div>
                 <button v-if="this.$store.state.modeEditProductQuantity != 'edit'" class="product-order-edit-button" @click="setModeEdit(this.detail)">Modifier la quantité</button>
             </div>
         </div>
@@ -26,7 +27,7 @@ import EditQuantity from '@/components/WarehousePreparationNewOrderEditQuantity.
 
 export default {
     name: 'Warehouse-preparation-new-order-product',
-    props: ["id", "quantity", "detail"],
+    props: ["id", "quantity", "detail", "request"],
     components: {
       EditQuantity,
     },
@@ -44,6 +45,13 @@ export default {
         setModeEdit(detail) {
             this.$store.state.detailId = detail
             this.$store.state.modeEditProductQuantity = 'edit'
+        },
+        checkErrorStock() {
+            if(this.stock < this.quantity) {
+                document.getElementById(this.id).classList.add('errorStock')
+            } else {
+                document.getElementById(this.id).classList.remove('errorStock')
+            }
         }
     },
     created() {
@@ -56,13 +64,21 @@ export default {
                     this.stock += stock.quantity
                 })
             }
-            
         })
+        .then(() => {
+            this.checkErrorStock()
+        })
+    },
+    updated() {
+        this.checkErrorStock()
     }
 }
 </script>
 
 <style>
+.errorStock{
+    border: solid 3px #ea510b;
+}
 .prepa-product-order{
     width: 80%;
     max-width: 600px;
@@ -71,7 +87,7 @@ export default {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+    box-shadow: rgba(93, 50, 50, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
     padding: 10px;
     border-radius: 5px;
 }
@@ -99,6 +115,11 @@ export default {
     font-size: 1.3em;
     font-weight: 600;
     margin-left: 5px;
+}
+.req{
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-right: 5px;
 }
 .qty-txt{
   display: flex;

@@ -1,6 +1,6 @@
 <template>
     <div id="foot">
-        <img src="../assets/pizza-back-3.jpg" alt="" id="pizza-back">
+        <img src="../assets/pizza-back-3.webp" alt="" id="pizza-back">
         <div id="foot-bloc">
             <router-link to="/warehouse_home" id="icon-home-link">Accueil</router-link>
             <router-link to="/" @click="logOut()" id="icon-logout-link">Déconnexion</router-link>
@@ -45,7 +45,6 @@ export default {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        
     }
     #icon-logout-link, #icon-home-link{
         margin-left: 10px;

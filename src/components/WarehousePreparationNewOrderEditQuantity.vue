@@ -48,7 +48,6 @@ export default {
                     this.error = "Pas assez de stock sur l'entrepôt, veuillez réduire la quantité"
                 }
             }
-            
         }
     },
     computed: {

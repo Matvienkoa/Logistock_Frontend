@@ -36,8 +36,8 @@
           <img v-if="product.onSale === 'no'" class="circle-order" src="../assets/circle-pending.svg" alt="">
           <div class="title-box-products">
             <div class="img-box-products">
-              <img v-if="product.image" :src="product.image" alt="" class="img-products">
-              <img v-if="!product.image" src="../assets/3.jpg" alt="" class="img-products no-pic">
+              <img crossorigin="anonymous" v-if="product.image" :src="product.image" alt="" class="img-products">
+              <img crossorigin="anonymous" v-if="!product.image" src="../assets/3.webp" alt="" class="img-products no-pic">
             </div>
             <div>{{ product.name }}</div>
           </div>
@@ -91,6 +91,22 @@ export default {
     }
   },
   created: function () {
+    this.$store.dispatch('checkToken')
+    .then((res) => {
+      if(res === 'expired') {
+        this.$router.push('/')
+      }
+    })
+    this.$store.dispatch('getProfile')
+    .then((res) => {
+      if(res.data) {
+        if(res.data.role !== 'warehouse') {
+          this.$router.push('/store_home')
+        }
+      } else {
+        this.$router.push('/')
+      }
+    })
     this.$store.dispatch('getProducts')
     this.$store.dispatch('getSuppliers')
   },

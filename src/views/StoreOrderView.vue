@@ -18,14 +18,15 @@
       <div v-for="product in products" :key="product.id" class="bloc-card">
           <div v-if="product.id !== 'deleted'" class="bloc-card-top">
             <div class="bloc-card-image-box">
-              <img v-if="product.image" :src="product.image" alt="" class="bloc-card-image">
-              <img v-if="!product.image" src="../assets/3.jpg" alt="" class="bloc-card-image no-pic">
+              <img crossorigin="anonymous" v-if="product.image" :src="product.image" alt="" class="bloc-card-image">
+              <img crossorigin="anonymous" v-if="!product.image" src="../assets/3.webp" alt="" class="bloc-card-image no-pic">
             </div>
             <div class="quantity-in-cart">
               <div class="quantity-box">
                 <div class="quantity">{{product.quantity}}</div>
                 <div v-if="status=== 'pending'" class="quantity-infos">Qté. demandée </div>
                 <div v-if="status=== 'validated'" class="quantity-infos">Qté. livrée </div>
+                <div v-if="status=== 'validated'" class="request-infos"><span class="request-number">{{product.request}}</span> commandé(s)</div>
               </div>
             </div>
           </div>
@@ -35,7 +36,6 @@
             <p>Colisage : <span class="bold">{{ product.packaging }}</span> / Colis</p>
             <p>Format : <span class="bold">{{ product.size }}</span></p>
           </div>
-
           <div v-if="product.id === 'deleted'" class="bloc-card-top-deleted">
             <div class="bloc-card-image-box">
               <img src="../assets/close.svg" alt="" class="bloc-card-image">
@@ -75,18 +75,31 @@ export default {
   computed: {
         ...mapGetters(['getOrder'])
   },
-  methods: {
-    
-  },
   created: function () {
+      this.$store.dispatch('checkToken')
+      .then((res) => {
+        if(res === 'expired') {
+          this.$router.push('/')
+        }
+      })
+      this.$store.dispatch('getProfile')
+      .then((res) => {
+        if(res.data) {
+          if(res.data.role !== 'store') {
+            this.$router.push('/warehouse_home')
+          }
+        } else {
+          this.$router.push('/')
+        }
+      })
       this.$store.dispatch('getOrder', this.$route.params.id)
       .then((res) => {
         this.status = res.data.status
         res.data.orderDetails.forEach(detail => {
             instance.get(`/product/${detail.productId}`)
             .then((res) => {
-                console.log(res)
                 if(res.data !== null) {
+                  res.data.request = detail.requestQuantity
                   res.data.quantity = detail.quantity
                   this.products.push(res.data)
                 } else {
@@ -133,22 +146,28 @@ export default {
 }
 .quantity-infos{
   font-size: 0.8em;
+  margin-bottom: 10px;
 }
 .quantity{
   font-size: 2.2em;
   font-weight: 600;
   margin-left: 5px;
 }
+.request-infos{
+  font-size: 0.8em;
+}
+.request-number{
+  font-size: 1.5em;
+  font-weight: bold;
+}
 .name{
   text-align: center;
   font-size: 1.4em;
   margin-bottom: 10px;
 }
-
 .bloc-card-top-deleted{
   justify-content: center;
 }
-
 .name-deleted{
   text-align: center;
   font-size: 1.4em;

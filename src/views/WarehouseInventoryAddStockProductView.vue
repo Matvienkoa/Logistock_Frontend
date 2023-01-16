@@ -102,6 +102,22 @@ export default {
     }
   },
   created: function () {
+      this.$store.dispatch('checkToken')
+      .then((res) => {
+        if(res === 'expired') {
+          this.$router.push('/')
+        }
+      })
+      this.$store.dispatch('getProfile')
+      .then((res) => {
+        if(res.data) {
+          if(res.data.role !== 'warehouse') {
+            this.$router.push('/store_home')
+          }
+        } else {
+          this.$router.push('/')
+        }
+      })
       this.$store.dispatch('getProduct', this.$route.params.id)
   },
 }

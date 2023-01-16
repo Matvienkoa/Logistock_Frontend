@@ -6,10 +6,9 @@
   <div class="page-mono">
     <div class="page-mono-product">
       <div class="product-image-bloc">
-        <img v-if="getProduct.image" :src="getProduct.image" alt="" class="product-image">
-        <img v-if="!getProduct.image" src="../assets/3.jpg" alt="" class="product-image no-pic">
+        <img crossorigin="anonymous" v-if="getProduct.image" :src="getProduct.image" alt="" class="product-image">
+        <img crossorigin="anonymous" v-if="!getProduct.image" src="../assets/3.webp" alt="" class="product-image no-pic">
       </div>
-      
       <div class="product-infos">
         <h1 class="mono-product-name">{{ getProduct.name }}</h1>
         <p>Référence : {{getProduct.reference}}</p>
@@ -22,12 +21,8 @@
         <p>TVA : {{getProduct.tva}} %</p>
         <p class="on-sale" v-if="getProduct.onSale === 'yes'">Disponible à la Vente<img class="circle-order" src="../assets/circle-validated.svg" alt=""></p>
         <p class="on-sale" v-if="getProduct.onSale === 'no'">Indisponible à la Vente<img class="circle-order" src="../assets/circle-pending.svg" alt=""></p>
-
-        
-        
       </div>
     </div>
-    
     <div class="page-mono-buttons">
       <router-link v-if="getProduct && getProduct.id" :to="{name: 'warehouse_edit_product', params: {id: getProduct.id}}" class="edit-button">
         Modifier
@@ -104,9 +99,24 @@ export default {
     }
   },
   created: function () {
+      this.$store.dispatch('checkToken')
+      .then((res) => {
+        if(res === 'expired') {
+          this.$router.push('/')
+        }
+      })
+      this.$store.dispatch('getProfile')
+      .then((res) => {
+        if(res.data) {
+          if(res.data.role !== 'warehouse') {
+            this.$router.push('/store_home')
+          }
+        } else {
+          this.$router.push('/')
+        }
+      })
       this.$store.dispatch('getProduct', this.$route.params.id)
       .then((res) => {
-        console.log(res.data)
         if(res.data.supplierId !== null) {
           this.$store.dispatch('getSupplier', res.data.supplierId)
           .then((res) => {
@@ -115,7 +125,6 @@ export default {
         } else {
           this.supplier = 'Pas de fournisseur attribué'
         }
-        
       })
   },
 }

@@ -22,7 +22,6 @@
                     <button class="cancel-cart-button" @click="backToCart()">Retour au panier</button>
                 </div>
             </div>
-            
         </div>
     </div>
 </template>
@@ -58,7 +57,6 @@ export default {
         confirmOrder() {
             let cart = localStorage.getItem('cart')
             cart = JSON.parse(cart)
-            console.log(cart)
             instance.post(`/order/`, {
                 delivery: this.delivery,
                 status: 'pending',
@@ -161,9 +159,6 @@ export default {
     width: 80%;
     max-width: 300px;
     margin: auto;
-}
-.applicant-label{
-
 }
 .applicant-input{
     margin-bottom: 20px;

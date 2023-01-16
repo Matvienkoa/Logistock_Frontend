@@ -35,8 +35,8 @@
         <img v-if="product.onSale === 'yes'" class="circle-order" src="../assets/circle-validated.svg" alt="">
         <img v-if="product.onSale === 'no'" class="circle-order" src="../assets/circle-pending.svg" alt="">
         <div class="bloc-card-image-box">
-          <img v-if="product.image" :src="product.image" alt="" class="bloc-card-image">
-          <img v-if="!product.image" src="../assets/3.jpg" alt="" class="bloc-card-image no-pic">
+          <img crossorigin="anonymous" v-if="product.image" :src="product.image" alt="" class="bloc-card-image">
+          <img crossorigin="anonymous" v-if="!product.image" src="../assets/3.webp" alt="" class="bloc-card-image no-pic">
         </div>
         <div class="bloc-card-infos-box">
           <h2>{{ product.name }}</h2>
@@ -72,6 +72,22 @@ export default {
       ...mapGetters(['getProducts', 'getSuppliers'])
   },
   created: function () {
+      this.$store.dispatch('checkToken')
+      .then((res) => {
+        if(res === 'expired') {
+          this.$router.push('/')
+        }
+      })
+      this.$store.dispatch('getProfile')
+      .then((res) => {
+        if(res.data) {
+          if(res.data.role !== 'warehouse') {
+            this.$router.push('/store_home')
+          }
+        } else {
+          this.$router.push('/')
+        }
+      })
       this.$store.dispatch('getProducts')
       this.$store.dispatch('getSuppliers')
   },
@@ -145,7 +161,6 @@ export default {
   margin: auto;
   margin-bottom: 10px;
   width: 95%;
-
 }
 .bloc-card-infos-box h3{
   text-align: center;

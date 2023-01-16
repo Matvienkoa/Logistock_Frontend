@@ -4,16 +4,15 @@
     <router-link to="/warehouse_home" class="back-button">Retour</router-link>
   </div>
   <div class="page">
-    
     <router-link to="/warehouse_preparation_new_orders" class="menu-links">
       <div class="menu-bloc">
-        <img src="../assets/order-pending.jpg" alt="" class="img-back">
+        <img src="../assets/order-pending.webp" alt="" class="img-back">
         <div class="title-card">Commandes reçues<img v-if="ordersPending.length > 0" src="../assets/circle-validated.svg" alt="" class="new-order"></div>
       </div>
     </router-link>
     <router-link to="/warehouse_preparation_validated_orders" class="menu-links">
       <div class="menu-bloc">
-        <img src="../assets/order-validated.jpg" alt="" class="img-back">
+        <img src="../assets/order-validated.webp" alt="" class="img-back">
         <div class="title-card">Commandes validées<img v-if="ordersToBill.length > 0" src="../assets/circle-validated.svg" alt="" class="new-order"></div>
       </div>
     </router-link>
@@ -41,10 +40,23 @@ export default {
   computed: {
     ...mapGetters(['getOrdersPending', 'getOrdersToBill'])
   },
-  methods: {
-    
-  },
   created: function () {
+    this.$store.dispatch('checkToken')
+    .then((res) => {
+      if(res === 'expired') {
+        this.$router.push('/')
+      }
+    })
+    this.$store.dispatch('getProfile')
+    .then((res) => {
+      if(res.data) {
+        if(res.data.role !== 'warehouse') {
+          this.$router.push('/store_home')
+        }
+      } else {
+        this.$router.push('/')
+      }
+    })
     this.$store.dispatch('getOrdersPending')
     .then(() => {
         this.ordersPending = this.getOrdersPending

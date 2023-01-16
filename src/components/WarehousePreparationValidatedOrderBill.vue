@@ -27,7 +27,6 @@ export default {
         confirmBill() {
             instance.put(`/order/invoice/${this.$route.params.id}`)
             .then((res) => {
-                console.log(res.data)
                 if(res.status === 201) {
                     this.$store.state.modeBillOrder = ""
                     this.$router.push('/warehouse_preparation_validated_orders')

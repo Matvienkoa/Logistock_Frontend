@@ -7,7 +7,7 @@
     <div class="page">
         <div class="page-order-infos">
             <div v-if="getOrder.billed === 'yes'" class="billed-order"><img src="../assets/invoice-green.svg" class="bill">Commande Facturée</div>
-            <div @click="billOrder()" v-if="getOrder.billed === 'no'" class="bill-order"><img src="../assets/invoice-white.svg" class="bill">Facturer</div>
+            <div @click="billOrder()" v-if="getOrder.billed === 'no' && getProfile.roleNumber === 'admin'" class="bill-order"><img src="../assets/invoice-white.svg" class="bill">Facturer</div>
             <p>Référence(s) présente(s) : <span class="bold">{{numberOfRefs}}</span></p>
             <p>Commande N° : <span class="bold">{{getOrder.id}}</span></p>
             <p>Du : <span class="bold">{{moment(getOrder.createdAt).format('L')}}</span></p>
@@ -17,7 +17,7 @@
             <p v-if="getOrder.commentStore">Note à la commande : {{getOrder.commentStore}}</p>
             <p v-if="getOrder.commentWarehouse">Réponse : {{getOrder.commentWarehouse}}</p>
         </div>
-        <Product v-for="detail in getOrder.orderDetails" :key="detail.id" :detail="detail.id" :id="detail.productId" :quantity="detail.quantity" />
+        <Product v-for="detail in getOrder.orderDetails" :key="detail.id" :detail="detail.id" :id="detail.productId" :quantity="detail.quantity" :request="detail.requestQuantity" />
     </div>
     <div class="bottom"></div>
 <Footer/>
@@ -49,7 +49,7 @@ export default {
         }
     },
     computed: {
-      ...mapGetters(['getOrder', 'getStore', 'getProducts'])
+      ...mapGetters(['getOrder', 'getStore', 'getProducts', 'getProfile'])
     },
     methods: {
         billOrder() {
@@ -57,6 +57,22 @@ export default {
         }
     },
     created: function () {
+        this.$store.dispatch('checkToken')
+        .then((res) => {
+            if(res === 'expired') {
+            this.$router.push('/')
+            }
+        })
+        this.$store.dispatch('getProfile')
+        .then((res) => {
+            if(res.data) {
+            if(res.data.role !== 'warehouse') {
+                this.$router.push('/store_home')
+            }
+            } else {
+            this.$router.push('/')
+            }
+        })
         this.$store.dispatch('getOrder', this.$route.params.id)
         .then((res) => {
             res.data.orderDetails.forEach(detail => {

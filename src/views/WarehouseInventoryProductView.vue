@@ -26,9 +26,7 @@
             <img class="delete-button-stock" @click="setDeleteMode(stock.id)" src="../assets/trash.svg" alt="">
           </div>
         </div>
-        
       </div>
-      
       <div class="show-confirm" v-if="mode === 'delete' && this.stock === stock.id">
         <p class="confirm-text">Supprimer ce stock?</p>
         <div class="choice-box">
@@ -86,6 +84,22 @@ export default {
     }
   },
   created: function () {
+      this.$store.dispatch('checkToken')
+      .then((res) => {
+        if(res === 'expired') {
+          this.$router.push('/')
+        }
+      })
+      this.$store.dispatch('getProfile')
+      .then((res) => {
+        if(res.data) {
+          if(res.data.role !== 'warehouse') {
+            this.$router.push('/store_home')
+          }
+        } else {
+          this.$router.push('/')
+        }
+      })
       this.$store.dispatch('getProduct', this.$route.params.id)
       .then((res) => {
         this.stocks = res.data.stocks
@@ -123,7 +137,6 @@ export default {
 .stocks-actions{
   display: flex;
   margin-top: 10px;
-
 }
 </style>
 

@@ -36,10 +36,25 @@ export default {
     methods: {
     },
     created: function () {
+        this.$store.dispatch('checkToken')
+        .then((res) => {
+            if(res === 'expired') {
+            this.$router.push('/')
+            }
+        })
+        this.$store.dispatch('getProfile')
+        .then((res) => {
+            if(res.data) {
+            if(res.data.role !== 'warehouse') {
+                this.$router.push('/store_home')
+            }
+            } else {
+            this.$router.push('/')
+            }
+        })
         this.$store.dispatch('getProducts')
         instance.get('/stock/')
         .then((res) => {
-            console.log(res.data)
             res.data.forEach(stock => {
                 let value = stock.quantity * stock.buyingPrice/100
                 this.value += value

@@ -5,7 +5,6 @@
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
-  /* font-family: 'Martian Mono', monospace; */
   color: #2c3e50;
 }
 *{
@@ -125,7 +124,6 @@ select{
   align-items: center;
   color: black;
 }
-
 .menu-links-list{
   width: 80%;
   max-width: 300px;
@@ -184,7 +182,6 @@ select{
   align-self: center;
   font-weight: 600;
 }
-
 /* Responsiv */
 @media (min-width: 700px) {
   .page{

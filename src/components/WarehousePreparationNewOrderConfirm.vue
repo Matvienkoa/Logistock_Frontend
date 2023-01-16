@@ -37,13 +37,6 @@ export default {
                 instance.post(`/stock/update/${detail.productId}`, {
                     quantity: detail.quantity
                 })
-                .then((res) => {
-                    console.log(res)
-                    
-                })
-                .catch((error) => {
-                    console.log(error.response.data.message)
-                })
             })
             instance.put(`/order/confirm/${this.$route.params.id}`, {
                 commentWarehouse: this.commentWarehouse
@@ -56,12 +49,6 @@ export default {
                                 productId: detail.productId,
                                 storeId: this.order.storeId,
                                 quantity: detail.quantity
-                            })
-                            .then((res) => {
-                                console.log(res)
-                            })
-                            .catch((error) => {
-                                console.log(error.response.data.message)
                             })
                         }
                     })

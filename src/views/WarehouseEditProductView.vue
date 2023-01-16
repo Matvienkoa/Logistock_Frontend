@@ -6,10 +6,8 @@
     </router-link>
   </div>
   <div class="page-form">
-
     <img crossorigin="anonymous" v-if="this.url" :src="this.url" alt="" class="product-img">
     <img crossorigin="anonymous" v-if="getProduct.image && this.url === ''" :src="getProduct.image" alt="" class="product-img">
-
     <div class="form">
       <label class="label">Image</label>
       <input class="file-input" id="file" @change="onFileSelected" type="file" ref="imageUrl" name="file">
@@ -129,6 +127,22 @@ export default {
         }
     },
     created() {
+      this.$store.dispatch('checkToken')
+      .then((res) => {
+        if(res === 'expired') {
+          this.$router.push('/')
+        }
+      })
+      this.$store.dispatch('getProfile')
+      .then((res) => {
+        if(res.data) {
+          if(res.data.role !== 'warehouse') {
+            this.$router.push('/store_home')
+          }
+        } else {
+          this.$router.push('/')
+        }
+      })
       this.$store.dispatch('getProduct', this.$route.params.id)
       .then((res) => {
         this.reference = res.data.reference

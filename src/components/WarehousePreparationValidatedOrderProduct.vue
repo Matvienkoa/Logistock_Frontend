@@ -11,6 +11,7 @@
             </div>
             <div class="product-order-stock">
                 <div class="qty-txt">Qté. Livrée : <div class="qty">{{this.quantity}}</div></div>
+                <div class="req-txt"><span class="req">{{this.request}}</span>commandé(s)</div>
             </div>
         </div>
     </div>
@@ -22,7 +23,7 @@ import instance from '@/axios';
 
 export default {
     name: 'Warehouse-preparation-validated-order-product',
-    props: ["id", "quantity", "detail"],
+    props: ["id", "quantity", "detail", "request"],
     components: {
       
     },
@@ -35,14 +36,10 @@ export default {
     computed: {
         ...mapGetters(['getProfile'])
     },
-    methods: {
-        
-    },
     created() {
         this.$store.dispatch('getProfile')
         instance.get(`/product/${this.id}`)
         .then((res) => {
-            console.log(res.data)
             this.product = res.data
         })
     }

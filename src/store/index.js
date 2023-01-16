@@ -180,6 +180,17 @@ export default createStore({
     }
   },
   actions: {
+    checkToken: () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const tokenLSV = jwt_decode(token);
+        if(Date.now() >= tokenLSV.exp*1000) {
+          return 'expired'
+        } else {
+          return 'valid'
+        }
+      }
+    },
     login: ({ commit }, userInfos) => {
       return new Promise((resolve, reject) => {
         instance.post('/auth/login', userInfos)
@@ -197,26 +208,30 @@ export default createStore({
     },
     getProfile: ({ commit }) => {
       const token = localStorage.getItem("token");
-      const decodedToken = jwt_decode(token, 'RANDOM_TOKEN_SECRET');
-      const userId = decodedToken.userId;
-      return new Promise((resolve, reject) => {
-        if (userId) {
-          instance.get(`/user/${userId}`)
-            .then(function (response) {
-              commit('SET_PROFILE', response.data);
-              if(response.data.role === 'store') {
-                instance.get(`/store/number/${response.data.roleNumber}`)
-                  .then((res) => {
-                    commit('SET_STORE', res.data);
-                  })
-              }
-              resolve(response)
-            })
-            .catch(function (error) {
-              reject(error)
-            });
-        }
-      })
+      if(token) {
+        const decodedToken = jwt_decode(token, 'RANDOM_TOKEN_SECRET');
+        const userId = decodedToken.userId;
+        return new Promise((resolve, reject) => {
+          if (userId) {
+            instance.get(`/user/${userId}`)
+              .then(function (response) {
+                commit('SET_PROFILE', response.data);
+                if(response.data.role === 'store') {
+                  instance.get(`/store/number/${response.data.roleNumber}`)
+                    .then((res) => {
+                      commit('SET_STORE', res.data);
+                    })
+                }
+                resolve(response)
+              })
+              .catch(function (error) {
+                reject(error)
+              });
+          }
+        })
+      } else {
+        return 'no token'
+      }
     },
     addSupplier: ({ commit }, supplier) => {
       return new Promise((resolve, reject) => {

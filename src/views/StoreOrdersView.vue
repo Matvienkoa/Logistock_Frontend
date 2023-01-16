@@ -4,14 +4,13 @@
     <router-link to="/store_home" class="back-button">Retour</router-link>
   </div>
   <div class="page">
-  
+    <div v-if="orders.length <= 0">Vous n'avez pas encore de commande validée!</div>
     <router-link class="store-orders" v-for="order in getStore.orders" :key="order.id" :to="{name: 'store_order', params: {id: order.id}}">
       <div class="prepa-orders-infos">
           <p class="order-date">Le : <span class="bold">{{moment(order.createdAt).format('L')}}</span></p>
           <p>N° : <span class="bold">{{order.id}}</span></p>
           <p>Livraison : <span class="bold">{{order.delivery}}</span></p>
       </div>
-      
       <div class="order-status" v-if="order.status === 'validated'">
         Validée
         <img class="circle-order" src="../assets/circle-validated.svg" alt="">
@@ -30,6 +29,7 @@
 import Header from '@/components/Header.vue'
 import Footer from '@/components/FooterStore.vue'
 import { mapGetters } from 'vuex';
+import instance from '@/axios';
 let moment = require('moment');
 moment.locale('fr');
 
@@ -41,14 +41,34 @@ export default {
   },
   data() {
     return {
-      moment: moment
+      moment: moment,
+      orders: []
     }
   },
   computed: {
       ...mapGetters(['getProfile', 'getStore'])
   },
   created() {
+    this.$store.dispatch('checkToken')
+    .then((res) => {
+      if(res === 'expired') {
+        this.$router.push('/')
+      }
+    })
     this.$store.dispatch('getProfile')
+    .then((res) => {
+      if(res.data) {
+        if(res.data.role !== 'store') {
+          this.$router.push('/warehouse_home')
+        }
+      } else {
+        this.$router.push('/')
+      }
+      instance.get(`/store/number/${res.data.roleNumber}`)
+      .then((res) => {
+        this.orders = res.data.orders
+      })
+    })
   }
 }
 </script>

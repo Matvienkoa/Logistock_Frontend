@@ -18,7 +18,6 @@
                 <p v-if="order.billed === 'yes'" class="billed">Facturée</p>
                 <p v-if="order.billed === 'no'" class="no-billed">A facturer</p>
             </div>
-            
         </router-link>
     </div>
     <div class="bottom"></div>
@@ -50,6 +49,22 @@ export default {
     methods: {
     },
     created: function () {
+        this.$store.dispatch('checkToken')
+        .then((res) => {
+            if(res === 'expired') {
+            this.$router.push('/')
+            }
+        })
+        this.$store.dispatch('getProfile')
+        .then((res) => {
+            if(res.data) {
+            if(res.data.role !== 'warehouse') {
+                this.$router.push('/store_home')
+            }
+            } else {
+            this.$router.push('/')
+            }
+        })
         this.$store.dispatch('getOrdersValidated')
         .then(() => {
             this.orders = this.getOrdersValidated

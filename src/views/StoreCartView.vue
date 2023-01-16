@@ -13,7 +13,7 @@
       <div v-for="product in getCart" :key="product.id" class="bloc-card">
           <div class="bloc-card-top">
             <div class="bloc-card-image-box">
-              <img :src="product.image" alt="" class="bloc-card-image">
+              <img crossorigin="anonymous" :src="product.image" alt="" class="bloc-card-image">
             </div>
             <div class="quantity-in-cart">
               <div class="quantity-box">
@@ -87,7 +87,6 @@ export default {
         if(cart != null) {
             this.$store.dispatch('getCart', cart)
         }
-        
     },
     getQuantity(productId) {
         let cart = JSON.parse(localStorage.getItem('cart'))
@@ -95,10 +94,25 @@ export default {
           const index = cart.findIndex(p => p.id === productId)
           return cart[index].quantity
         }
-        
     }
   },
   created() {
+    this.$store.dispatch('checkToken')
+    .then((res) => {
+      if(res === 'expired') {
+        this.$router.push('/')
+      }
+    })
+    this.$store.dispatch('getProfile')
+    .then((res) => {
+      if(res.data) {
+        if(res.data.role !== 'store') {
+          this.$router.push('/warehouse_home')
+        }
+      } else {
+        this.$router.push('/')
+      }
+    })
     this.getProductsInCart()
     this.$store.state.modeEditQuantity = ''
     this.$store.state.modeConfirmCart = ''

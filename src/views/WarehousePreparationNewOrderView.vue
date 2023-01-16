@@ -11,7 +11,6 @@
         <router-link to="/warehouse_preparation_new_orders" class="back-button">Retour</router-link>
         <div class="cart-button" @click="confirmOrder()">Valider la commande</div>
     </div>
-
     <div class="page">
         <div class="page-order-infos">
             <div @click="getPurchase()" class="print-order"><img src="../assets/download.svg" class="download">Bon de Commande</div>
@@ -22,8 +21,7 @@
             <p>Demandeur : <span class="bold">{{getOrder.applicant}}</span></p>
             <p v-if="getOrder.commentStore">Note à la commande : {{getOrder.commentStore}}</p>
         </div>
-        
-        <Product v-for="detail in getOrder.orderDetails" :key="detail.id" :detail="detail.id" :id="detail.productId" :quantity="detail.quantity" />
+        <Product v-for="detail in getOrder.orderDetails" :key="detail.id" :detail="detail.id" :id="detail.productId" :quantity="detail.quantity" :request="detail.requestQuantity" />
     </div>
     <div class="bottom"></div>
 <Footer/>
@@ -234,7 +232,6 @@ export default {
                 ]
             }
             pdfMake.createPdf(data).download();
-
         },
         getPurchase() {
             this.$store.dispatch('getProducts')
@@ -255,14 +252,27 @@ export default {
                 }
             })
             if(this.error === '') {
-                console.log('pas d erreur')
                 this.$store.state.modeConfirmOrder = "confirmOrder"
-            } else {
-                console.log('erreur')
             }
         }
     },
     created: function () {
+        this.$store.dispatch('checkToken')
+        .then((res) => {
+            if(res === 'expired') {
+            this.$router.push('/')
+            }
+        })
+        this.$store.dispatch('getProfile')
+        .then((res) => {
+            if(res.data) {
+            if(res.data.role !== 'warehouse') {
+                this.$router.push('/store_home')
+            }
+            } else {
+            this.$router.push('/')
+            }
+        })
         this.$store.dispatch('getOrder', this.$route.params.id)
         this.$store.dispatch('getProducts')
         .then((res) => {

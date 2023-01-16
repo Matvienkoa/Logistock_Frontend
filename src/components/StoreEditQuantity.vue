@@ -59,7 +59,6 @@ export default {
     created() {
         this.$store.dispatch('getProduct', this.product)
         .then((res) => {
-            console.log(res)
             res.data.stocks.forEach(stock => {
                 this.stock += stock.quantity
             });

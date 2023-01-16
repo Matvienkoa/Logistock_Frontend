@@ -30,8 +30,8 @@
         <div v-if="(product.category === categorySelected || categorySelected === '') && product.onSale === 'yes'" class="bloc-card">
           <div class="bloc-card-top">
             <div class="bloc-card-image-box">
-              <img v-if="product.image" :src="product.image" alt="" class="bloc-card-image">
-              <img v-if="!product.image" src="../assets/3.jpg" alt="" class="bloc-card-image no-pic">
+              <img crossorigin="anonymous" v-if="product.image" :src="product.image" alt="" class="bloc-card-image">
+              <img crossorigin="anonymous" v-if="!product.image" src="../assets/3.webp" alt="" class="bloc-card-image no-pic">
             </div>
             <div class="bloc-add-product">
               <img v-if="checkProduct(product.id) === -1 && checkAvailability(product.id) > 0" @click="addProduct(product.id)" src="../assets/add-cart.svg" class="add-cart-icon">
@@ -46,7 +46,6 @@
             <h2 class="name">{{ product.name }}</h2>
             <h3>{{ product.description }}</h3>
             <p>Réf. {{ product.reference }}</p>
-            <!-- <p>Catégorie : {{ product.category }}</p> -->
             <p>Colisage : <span class="bold">{{ product.packaging }}</span> unité(s)</p>
             <p>Format : <span class="bold">{{ product.size }}</span></p>
           </div>
@@ -107,7 +106,22 @@ export default {
     },
   },
   created() {
+    this.$store.dispatch('checkToken')
+    .then((res) => {
+      if(res === 'expired') {
+        this.$router.push('/')
+      }
+    })
     this.$store.dispatch('getProfile')
+    .then((res) => {
+      if(res.data) {
+        if(res.data.role !== 'store') {
+          this.$router.push('/warehouse_home')
+        }
+      } else {
+        this.$router.push('/')
+      }
+    })
     this.$store.dispatch('getProducts')
     this.$store.dispatch('getCartForIcon')
   }
@@ -143,7 +157,6 @@ export default {
 .page-products{
   padding-top: 30px;
 }
-
 .add-cart-icon{
   height: 30px;
   margin-right: 40px;

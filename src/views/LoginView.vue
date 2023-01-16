@@ -1,9 +1,9 @@
 <template>
   <div id="home">
-    <img src="../assets/pizza-back.jpg" alt="" id="pizza-back">
+    <img src="../assets/pizza-back.webp" alt="" id="pizza-back">
     <div id="form">
       <div id="logo-main">
-        <img src="../assets/3.jpg" alt="" id="logo-sp">
+        <img src="../assets/3.webp" alt="" id="logo-sp">
       </div>
       <div id="form-input">
         <label>Identifiant</label>
@@ -14,12 +14,12 @@
       </div>
       <button @click="logedIn()" id="button-login">Connexion</button>
       <div id="logos-2">
-        <img src="../assets/1.png" alt="" class="logo-login-2">
-        <img src="../assets/2.jpg" alt="" class="logo-login-2">
+        <img src="../assets/1.webp" alt="" class="logo-login-2">
+        <img src="../assets/2.webp" alt="" class="logo-login-2">
       </div>
     </div>
     <div id="logos-1">
-      <img src="../assets/logo-sp-petit.png" alt="" class="logo-login-1">
+      <img src="../assets/logo-sp-petit.webp" alt="" class="logo-login-1">
       <img src="../assets/logo-mburger-petit.webp" alt="" class="logo-login-1">
     </div>
   </div>
@@ -76,6 +76,25 @@ export default {
       })
       this.error = ''
     },
+  },
+  created() {
+    this.$store.dispatch('checkToken')
+    .then((res) => {
+      if(res === 'expired') {
+        this.error = {message: 'Votre session a expiré, veuillez vous reconnecter'}
+      }
+      if(res === 'valid') {
+        this.$store.dispatch('getProfile')
+        .then((res) => {
+          if (res.data.role === "warehouse") {
+            this.$router.push("warehouse_home");
+          }
+          if (res.data.role === "store") {
+            this.$router.push("store_home");
+          }
+        })
+      }
+    })
   }
 }
 </script>

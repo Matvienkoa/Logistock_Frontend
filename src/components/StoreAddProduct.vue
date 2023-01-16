@@ -53,7 +53,6 @@ export default {
                             localStorage.setItem('cart', JSON.stringify(cart))
                             this.$store.dispatch('getCartForIcon')
                             this.$store.state.modeAddProduct = ""
-                            
                         }
                     } else {
                         cart = []
@@ -64,12 +63,10 @@ export default {
                         localStorage.setItem('cart', JSON.stringify(cart))
                         this.$store.dispatch('getCartForIcon')
                         this.$store.state.modeAddProduct = ""
-                        
                     } 
                 } else {
                     this.error = "Pas assez de stock sur l'entrepôt, veuillez réduire la quantité"
                 }
-                
             }
         },
     },
@@ -77,7 +74,6 @@ export default {
         this.$store.dispatch('getProfile')
         this.$store.dispatch('getProduct', this.product)
         .then((res) => {
-            console.log(res)
             res.data.stocks.forEach(stock => {
                 this.stock += stock.quantity
             });
@@ -149,9 +145,4 @@ export default {
     width: 20px;
     cursor: pointer;
 }
-
-@media(min-width: 700px) {
-    
-}
-
 </style>

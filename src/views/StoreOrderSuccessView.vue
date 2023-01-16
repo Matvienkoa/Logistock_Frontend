@@ -6,7 +6,6 @@
     <div class="txt-success">Vous pouvez la retrouver dans :</div>
     <router-link class="orders-button" to="/store_orders">Vos commandes</router-link>
 </div>
-    
 <Footer/>
 </template>
 
@@ -20,6 +19,24 @@ export default {
         Header,
         Footer,
     },
+    created() {
+    this.$store.dispatch('checkToken')
+    .then((res) => {
+      if(res === 'expired') {
+        this.$router.push('/')
+      }
+    })
+    this.$store.dispatch('getProfile')
+    .then((res) => {
+      if(res.data) {
+        if(res.data.role !== 'store') {
+          this.$router.push('/warehouse_home')
+        }
+      } else {
+        this.$router.push('/')
+      }
+    })
+  }
 }
 </script>
 

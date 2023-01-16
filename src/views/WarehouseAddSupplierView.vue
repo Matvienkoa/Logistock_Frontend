@@ -74,13 +74,30 @@ export default {
                 }
             })
             .catch((error) => {
-                console.log(error)
                 this.error = error.response.data;
                 const nameInput = document.getElementById('input-name');
                 nameInput.classList.add('empty')
             })
         }
     },
+    created() {
+      this.$store.dispatch('checkToken')
+      .then((res) => {
+        if(res === 'expired') {
+          this.$router.push('/')
+        }
+      })
+      this.$store.dispatch('getProfile')
+      .then((res) => {
+        if(res.data) {
+          if(res.data.role !== 'warehouse') {
+            this.$router.push('/store_home')
+          }
+        } else {
+          this.$router.push('/')
+        }
+      })
+    }
 }
 </script>
 

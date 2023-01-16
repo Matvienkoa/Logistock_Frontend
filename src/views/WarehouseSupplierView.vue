@@ -11,7 +11,7 @@
         <p>{{getSupplier.adress2}}</p>
         <p>{{getSupplier.postalCode}}</p>
         <p>{{getSupplier.city}}</p>
-        <p>Contact : {{getSupplier.contact}}</p>
+        <p v-if="getSupplier.contact">Contact : {{getSupplier.contact}}</p>
         <p>{{getSupplier.tel}}</p>
         <p>{{getSupplier.mail}}</p>
       </div>
@@ -30,7 +30,6 @@
             <div class="cancel-button" @click="cancelConfirm()">Annuler</div>
         </div>
     </div>
-    
   </div>
 <Footer/>
 </template>
@@ -72,6 +71,22 @@ export default {
     }
   },
   created: function () {
+      this.$store.dispatch('checkToken')
+      .then((res) => {
+        if(res === 'expired') {
+          this.$router.push('/')
+        }
+      })
+      this.$store.dispatch('getProfile')
+      .then((res) => {
+        if(res.data) {
+          if(res.data.role !== 'warehouse') {
+            this.$router.push('/store_home')
+          }
+        } else {
+          this.$router.push('/')
+        }
+      })
       this.$store.dispatch('getSupplier', this.$route.params.id)
   },
 }
@@ -142,7 +157,6 @@ export default {
   margin-top: 5px;
   font-weight: bold;
 }
-
 .choice-box{
   display: flex;
   justify-content: center;

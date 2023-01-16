@@ -40,7 +40,6 @@ export default {
                 end: this.end,
             })
             .then((res) => {
-                console.log(res)
                 this.quantity = res.data
             })
         })

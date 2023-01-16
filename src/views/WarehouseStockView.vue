@@ -6,25 +6,25 @@
   <div class="page">
     <router-link to="/warehouse_suppliers" class="menu-links">
       <div class="menu-bloc">
-        <img src="../assets/supplier2.jpg" alt="" class="img-back">
+        <img src="../assets/supplier2.webp" alt="" class="img-back">
         <div class="title-card">Fournisseurs</div>
       </div>
     </router-link>
     <router-link to="/warehouse_products" class="menu-links">
       <div class="menu-bloc">
-        <img src="../assets/products2.jpg" alt="" class="img-back">
+        <img src="../assets/products2.webp" alt="" class="img-back">
         <div class="title-card">Références</div>
       </div>
     </router-link>
     <router-link to="/warehouse_inventory" class="menu-links">
       <div class="menu-bloc">
-        <img src="../assets/stocks.jpg" alt="" class="img-back">
+        <img src="../assets/stocks.webp" alt="" class="img-back">
         <div class="title-card">Stocks par Référence</div>
       </div>
     </router-link>
     <router-link to="/warehouse_date_stocks" class="menu-links">
       <div class="menu-bloc">
-        <img src="../assets/date.jpg" alt="" class="img-back">
+        <img src="../assets/date.webp" alt="" class="img-back">
         <div class="title-card">Stocks à dates courtes</div>
       </div>
     </router-link>
@@ -42,6 +42,24 @@ export default {
   components: {
     Header,
     Footer,
+  },
+  created() {
+    this.$store.dispatch('checkToken')
+    .then((res) => {
+      if(res === 'expired') {
+        this.$router.push('/')
+      }
+    })
+    this.$store.dispatch('getProfile')
+    .then((res) => {
+      if(res.data) {
+        if(res.data.role !== 'warehouse') {
+          this.$router.push('/store_home')
+        }
+      } else {
+        this.$router.push('/')
+      }
+    })
   }
 }
 </script>

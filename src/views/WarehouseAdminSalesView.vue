@@ -124,6 +124,22 @@ export default {
         }
     },
     created: function () {
+        this.$store.dispatch('checkToken')
+        .then((res) => {
+            if(res === 'expired') {
+            this.$router.push('/')
+            }
+        })
+        this.$store.dispatch('getProfile')
+        .then((res) => {
+            if(res.data) {
+            if(res.data.role !== 'warehouse') {
+                this.$router.push('/store_home')
+            }
+            } else {
+            this.$router.push('/')
+            }
+        })
         this.$store.dispatch('getStores')
         this.$store.dispatch('getSuppliers')
         this.$store.dispatch('getProducts')
@@ -210,7 +226,6 @@ export default {
     color: white;
     background-image: linear-gradient(52deg, rgb(174,174,174),rgb(14,0,0));
 }
-
 .page-results{
     width: 100%;
     max-width: 700px;

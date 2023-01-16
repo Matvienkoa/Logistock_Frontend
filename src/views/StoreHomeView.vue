@@ -4,13 +4,13 @@
   <div class="page">
     <router-link to="/store_products" class="menu-links">
       <div class="menu-bloc">
-        <img src="../assets/bag.jpg" alt="" class="img-back">
+        <img src="../assets/bag.webp" alt="" class="img-back">
         <div class="title-card">Commander</div>
       </div>
     </router-link>
     <router-link to="/store_orders" class="menu-links">
       <div class="menu-bloc">
-        <img src="../assets/order-1.jpg" alt="" class="img-back">
+        <img src="../assets/order-1.webp" alt="" class="img-back">
         <div class="title-card">Mes Commandes</div>
       </div>
     </router-link>
@@ -33,7 +33,22 @@ export default {
       ...mapGetters(['getStore'])
   },
   created() {
+    this.$store.dispatch('checkToken')
+    .then((res) => {
+      if(res === 'expired') {
+        this.$router.push('/')
+      }
+    })
     this.$store.dispatch('getProfile')
+    .then((res) => {
+      if(res.data) {
+        if(res.data.role !== 'store') {
+          this.$router.push('/warehouse_home')
+        }
+      } else {
+        this.$router.push('/')
+      }
+    })
   }
 }
 </script>

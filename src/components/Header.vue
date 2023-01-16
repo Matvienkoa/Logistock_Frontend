@@ -1,10 +1,9 @@
 <template>
     <div id="head">
         <div id="head-box">
-            <img src="../assets/3.jpg" alt="" id="logo">
+            <img src="../assets/3.webp" alt="" id="logo">
             <h1 id="title">{{ title }}</h1>
         </div>
-        
     </div>
 </template>
 

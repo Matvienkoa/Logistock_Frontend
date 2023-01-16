@@ -4,7 +4,6 @@
     <router-link v-if="getSupplier && getSupplier.id" :to="{name: 'warehouse_supplier', params: {id: getSupplier.id}}" class="back-button">Retour</router-link>
   </div>
   <div class="page-form">
-
     <div class="form">
       <label class="label">Nom<span class="star">*</span></label>
       <input class="input" id="input-name" @input="cancelError()" v-model="name" type="text" placeholder="Nom du fournisseur" />
@@ -87,6 +86,22 @@ export default {
         }
     },
     created() {
+      this.$store.dispatch('checkToken')
+      .then((res) => {
+        if(res === 'expired') {
+          this.$router.push('/')
+        }
+      })
+      this.$store.dispatch('getProfile')
+      .then((res) => {
+        if(res.data) {
+          if(res.data.role !== 'warehouse') {
+            this.$router.push('/store_home')
+          }
+        } else {
+          this.$router.push('/')
+        }
+      })
       this.$store.dispatch('getSupplier', this.$route.params.id)
       .then((res) => {
         this.name = res.data.name

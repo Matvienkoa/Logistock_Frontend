@@ -13,14 +13,14 @@
 
     <router-link to="/warehouse_admin_sales" class="menu-links">
       <div class="menu-bloc">
-        <img src="../assets/sales.jpg" alt="" class="img-back">
+        <img src="../assets/sales.webp" alt="" class="img-back">
         <div class="title-card">Mes ventes</div>
       </div>
     </router-link>
 
     <router-link to="/warehouse_admin_stocks" class="menu-links">
       <div class="menu-bloc">
-        <img src="../assets/value.jpg" alt="" class="img-back">
+        <img src="../assets/value.webp" alt="" class="img-back">
         <div class="title-card">Valeur Marchande</div>
       </div>
     </router-link>
@@ -32,6 +32,7 @@
 <script>
 import Header from '@/components/Header.vue'
 import Footer from '@/components/FooterWarehouse.vue'
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'warehouse_admin',
@@ -39,5 +40,26 @@ export default {
     Header,
     Footer,
   },
+  computed: {
+      ...mapGetters(['getProfile'])
+  },
+  created() {
+    this.$store.dispatch('checkToken')
+    .then((res) => {
+      if(res === 'expired') {
+        this.$router.push('/')
+      }
+    })
+    this.$store.dispatch('getProfile')
+    .then((res) => {
+      if(res.data) {
+        if(res.data.role !== 'warehouse') {
+          this.$router.push('/store_home')
+        }
+      } else {
+        this.$router.push('/')
+      }
+    })
+  }
 }
 </script>
