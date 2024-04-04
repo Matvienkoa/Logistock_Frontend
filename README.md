@@ -1,24 +1,9 @@
-# frontend
+# PWA for inventory and order management
 
-## Project setup
-```
-npm install
-```
+![enter image description here](https://github.com/Matvienkoa/ShowPizzStock_Frontend/blob/master/src/assets/screen.PNG?raw=true)
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+Internal tool to manage your stocks (references, short dates, market value, etc.) as well as orders from affiliated stores.
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## Technologies Frontend
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Vue.js
