@@ -3,7 +3,8 @@ import axios from 'axios'
 
 // Config Url
 const instance = axios.create({
-    baseURL: 'http://localhost:3000/api/spdev/',
+    baseURL: '/api/spdev/',
+    // baseURL: 'http://localhost:3000/api/spdev/',
 });
 
 // Config Token in Anthorization-Header

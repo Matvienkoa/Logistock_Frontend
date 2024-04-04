@@ -1,12 +1,18 @@
 <template>
+<div v-if="isLoading" id="spinner" class="lds-ring">
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+</div>
 <Header :title="'Stock à date'"/>
     <div class="back-head">
         <router-link to="/warehouse_stock" class="back-button">Retour</router-link>
     </div>
     <div class="page-search">
         <div class="search-box">
-            <label class="date-label">DLUO : </label>
-            <input  v-model="date" type="date" name="" class="date-input">
+            <p class="date-label">DLUO : </p>
+            <input  v-model="date" type="date" id="input-date" class="date-input">
             <div class="search-button" @click="updateStocks()">Rechercher</div>
         </div>
         <p v-if="stocks.length <= 0" class="no-stock">Aucun stock ne présente de DLUO avant cette date</p>
@@ -45,7 +51,8 @@ export default {
       return {
           moment: moment,
           stocks: [],
-          date: ""
+          date: "",
+          isLoading: false,
       }
     },
     computed: {
@@ -53,6 +60,7 @@ export default {
     },
     methods: {
         updateStocks() {
+            this.isLoading = true;
             this.stocks = []
             this.$store.dispatch('getStocks')
             .then((res) => {
@@ -87,10 +95,12 @@ export default {
                         }
                     }
                 })
+                this.isLoading = false;
             })
         }
     },
     created() {
+        this.isLoading = true;
         this.$store.dispatch('checkToken')
         .then((res) => {
             if(res === 'expired') {
@@ -102,6 +112,9 @@ export default {
             if(res.data) {
             if(res.data.role !== 'warehouse') {
                 this.$router.push('/store_home')
+            }
+            if(res.data.role === 'warehouse' && res.data.roleNumber !== 'admin') {
+                this.$router.push('/warehouse_home')
             }
             } else {
             this.$router.push('/')
@@ -122,6 +135,7 @@ export default {
                     this.stocks.sort(SortTime)
                 })
             })
+            this.isLoading = false;
         })
     }
 }
@@ -139,7 +153,7 @@ export default {
     align-items: center;
 }
 .search-box{
-    width: 100%;
+    width: 95%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -172,7 +186,7 @@ export default {
     border-radius: 7px;
     cursor: pointer;
     color: white;
-    background-image: linear-gradient(52deg, rgb(122, 218, 119),rgb(11, 100, 26));
+    background-image: linear-gradient(52deg, rgb(174,174,174),rgb(14,0,0));
     margin-left: 20px;
     margin-bottom: 10px;
 }
@@ -183,12 +197,18 @@ export default {
     font-weight: 600;
     color: #ea510b;
 }
+.stocks-infos-date{
+    max-width: 60%;
+}
 .stocks-infos-qty{
   display: flex;
   font-size: 1.2em;
 }
+.qty-box{
+    text-align: end;
+}
 .quantity{
     font-weight: 600;
-    font-size: 1.4em;
+    font-size: 1.2em;
 }
 </style>

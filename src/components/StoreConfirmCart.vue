@@ -9,12 +9,12 @@
                     <option value="retrait">Retrait</option>
                 </select><span class="star">*</span>
                 <div class="applicant-box">
-                    <label class="applicant-label">Demandeur<span class="star">*</span></label>
+                    <p class="applicant-label">Demandeur<span class="star">*</span></p>
                     <input @input="cancelErrorApplicant()" v-model="applicant" id="applicant-input" class='applicant-input required' type="text" placeholder="Nom du demandeur">
                 </div>
                 <div class="comment-box">
                     <p>Ajouter un commentaire :</p>
-                    <textarea v-model="commentStore" cols="30" rows="10"></textarea>
+                    <textarea id="input-comment" v-model="commentStore" cols="30" rows="10" placeholder="500 Caractères maximum" maxlength="500"></textarea>
                 </div>
                 <div class="error" v-if="error">{{ error.message }}</div>
                 <div class="confirm-cart-buttons">
@@ -70,7 +70,8 @@ export default {
                         instance.post(`/orderdetails/`, {
                             productId: product.id,
                             orderId: res.data.id,
-                            quantity: product.quantity
+                            quantity: product.quantity,
+                            requestQuantity: product.quantity
                         })
                     })
                     localStorage.removeItem('cart')

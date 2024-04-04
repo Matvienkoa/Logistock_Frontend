@@ -1,4 +1,10 @@
 <template>
+<div v-if="isLoading" id="spinner" class="lds-ring">
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+</div>
 <StoreEditQuantity v-if="this.$store.state.modeEditQuantity === 'editQuantity'" :product="product" />
 <StoreConfirmCart v-if="this.$store.state.modeConfirmCart === 'confirmCart'" />
 <Header :title="'Mon Panier'"/>
@@ -56,7 +62,8 @@ export default {
   data() {
     return {
       mode: "",
-      product: null
+      product: null,
+      isLoading: false,
     }
   },
   computed: {
@@ -86,6 +93,11 @@ export default {
         let cart = JSON.parse(localStorage.getItem('cart'))
         if(cart != null) {
             this.$store.dispatch('getCart', cart)
+            .then(() => {
+              this.isLoading = false;
+            })
+        } else {
+          this.isLoading = false;
         }
     },
     getQuantity(productId) {
@@ -97,6 +109,7 @@ export default {
     }
   },
   created() {
+    this.isLoading = true;
     this.$store.dispatch('checkToken')
     .then((res) => {
       if(res === 'expired') {

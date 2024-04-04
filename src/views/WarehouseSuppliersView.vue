@@ -1,4 +1,10 @@
 <template>
+<div v-if="isLoading" id="spinner" class="lds-ring">
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+</div>
 <Header :title="'Fournisseurs'"/>
   <div class="back-head">
     <router-link to="/warehouse_stock" class="back-button">Retour</router-link>
@@ -27,10 +33,16 @@ export default {
     Header,
     Footer,
   },
+  data() {
+    return {
+      isLoading: false,
+    }
+  },
   computed: {
         ...mapGetters(['getSuppliers'])
     },
     created: function () {
+      this.isLoading = true;
         this.$store.dispatch('checkToken')
         .then((res) => {
           if(res === 'expired') {
@@ -43,11 +55,17 @@ export default {
             if(res.data.role !== 'warehouse') {
               this.$router.push('/store_home')
             }
+            if(res.data.role === 'warehouse' && res.data.roleNumber !== 'admin') {
+              this.$router.push('/warehouse_home')
+            }
           } else {
             this.$router.push('/')
           }
         })
         this.$store.dispatch('getSuppliers')
+        .then(() => {
+          this.isLoading = false;
+        })
     },
 }
 </script>

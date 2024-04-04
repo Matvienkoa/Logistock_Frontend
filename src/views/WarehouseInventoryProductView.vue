@@ -1,4 +1,10 @@
 <template>
+<div v-if="isLoading" id="spinner" class="lds-ring">
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+</div>
 <Header :title="'Stock Produit'"/>
   <div class="back-head">
     <router-link to="/warehouse_inventory" class="back-button">Retour</router-link>
@@ -7,6 +13,7 @@
     </router-link>
   </div>
   <div class="page">
+    <h1 class='title-edit'>{{getProduct.name}}</h1>
     <div v-if="stocks.length <= 0" class="no-stock">
       Ce produit n'a pas de stock disponible
     </div>
@@ -59,7 +66,8 @@ export default {
           mode: "",
           stock: "",
           moment: moment,
-          stocks: []
+          stocks: [],
+          isLoading: false,
       }
   },
   computed: {
@@ -84,6 +92,7 @@ export default {
     }
   },
   created: function () {
+    this.isLoading = true;
       this.$store.dispatch('checkToken')
       .then((res) => {
         if(res === 'expired') {
@@ -96,6 +105,9 @@ export default {
           if(res.data.role !== 'warehouse') {
             this.$router.push('/store_home')
           }
+          if(res.data.role === 'warehouse' && res.data.roleNumber !== 'admin') {
+            this.$router.push('/warehouse_home')
+          }
         } else {
           this.$router.push('/')
         }
@@ -103,6 +115,7 @@ export default {
       this.$store.dispatch('getProduct', this.$route.params.id)
       .then((res) => {
         this.stocks = res.data.stocks
+        this.isLoading = false;
       })
   },
 }

@@ -1,40 +1,43 @@
 <template>
+<div v-if="isLoading" id="spinner" class="lds-ring">
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+</div>
 <Header :title="'Ventes'"/>
     <div class="back-head">
         <router-link to="/warehouse_admin" class="back-button">Retour</router-link>
     </div>
     <div class="page-search">
         <div v-if="mode === 'hideProducts'" class="search-box">
-            <select class="search-input" v-model="supplierSelected" name="" id="">
+            <select class="search-input" v-model="supplierSelected" name="" id="select-supplier">
                 <option value="">Tous les fournisseurs</option>
                 <option v-for="supplier in getSuppliers" :key="supplier.id" :value="supplier.id">{{supplier.name}}</option>
             </select>
-            <select class="search-input" v-model="storeSelected" name="" id="">
+            <select class="search-input" v-model="storeSelected" name="" id="select-store">
                 <option value="">Tous les Points de vente</option>
                 <option v-for="store in getStores" :key="store.id" :value="store.id">{{store.name}}</option>
             </select>
             <div class="item-search">
-                <label for="">Date de début : </label>
-                <input @input="cancelError()" v-model="startDate" type="date" name="" class="date-input">
+                <label for="input-date-start">Date de début : </label>
+                <input id="input-date-start" @input="cancelError()" v-model="startDate" type="date" name="" class="date-input">
             </div>
             <div class="item-search">
-                <label for="">Date de fin : </label>
-                <input @input="cancelError()" v-model="endDate" type="date" name="" class="date-input">
+                <label for="input-date-end">Date de fin : </label>
+                <input id="input-date-end" @input="cancelError()" v-model="endDate" type="date" name="" class="date-input">
             </div>
         </div>
-
         <div v-if="mode === 'showProducts'" class="page-resume">
             <p>Fournisseur : <span class="bold">{{checkSupplier(supplierSelected)}}</span></p>
             <p>Point de vente : <span class="bold">{{checkStore(storeSelected)}}</span></p>
             <p>Début : <span class="bold">{{checkStartDate(startDate)}}</span></p>
             <p>Fin : <span class="bold">{{checkEndDate(endDate)}}</span></p>
         </div>
-
         <div class="error" v-if="error">{{ error }}</div>
-
         <button class="search-button" v-if="mode === 'hideProducts'" @click="showProducts()">Valider</button>
         <button class="reset-button" v-if="mode === 'showProducts'" @click="hideProducts()">Nouvelle recherche</button>
-
+        <button class="valid-add-button" v-if="mode === 'showProducts'" @click="download()">Exporter</button>
         <div class="page-results" v-if="mode === 'showProducts'">
             <div class="result-products" v-for="product in getProducts" :key="product.id">
                 <Product v-if="product.supplierId === supplierSelected || supplierSelected === ''" :id="product.id" :store="storeSelected" :supplier="supplierSelected" :start="startDate" :end="endDate" />
@@ -50,6 +53,8 @@ import Header from '@/components/Header.vue'
 import Footer from '@/components/FooterWarehouse.vue'
 import Product from '@/components/WarehouseAdminSalesProduct.vue'
 import { mapGetters } from 'vuex';
+import instance from '@/axios';
+import xlsx from "json-as-xlsx"
 let moment = require('moment');
 moment.locale('fr');
 
@@ -68,13 +73,45 @@ export default {
             startDate: "",
             endDate: "",
             error: "",
-            moment: moment
+            moment: moment,
+            isLoading: false,
+            data: [
+                {
+                    sheet: "Ventes",
+                    columns: [
+                        { label: "Produit", value: "name" },
+                        { label: "Référence", value: "reference" },
+                        { label: "Catégorie", value: "category" },
+                        { label: "TVA", value: "tva" },
+                        { label: "Quantité", value: "qty" },
+                        { label: "Prix de vente", value: "sellingPrice" }
+                    ],
+                    content: [],
+                },
+            ],
+            settings: {
+                fileName: "Ventes",
+                writeMode: "writeFile"
+            }
         }
     },
     computed: {
       ...mapGetters(['getStores', 'getSuppliers', 'getProducts']),
     },
     methods: {
+        download() {
+            instance.post(`/sale/product/xls/`, {
+                store: this.storeSelected,
+                supplier: this.supplierSelected,
+                start: this.startDate,
+                end: this.endDate,
+            })
+            .then((res) => {
+                this.data[0].content = res.data.content1
+                this.settings.fileName = 'Ventes du_' + res.data.infos.start + '_au_' + res.data.infos.end + '_' + res.data.infos.supplier + '_' + res.data.infos.store
+                xlsx(this.data, this.settings)
+            })
+        },
         cancelError() {
             this.error = ''
         },
@@ -124,6 +161,7 @@ export default {
         }
     },
     created: function () {
+        this.isLoading = true;
         this.$store.dispatch('checkToken')
         .then((res) => {
             if(res === 'expired') {
@@ -133,16 +171,22 @@ export default {
         this.$store.dispatch('getProfile')
         .then((res) => {
             if(res.data) {
-            if(res.data.role !== 'warehouse') {
-                this.$router.push('/store_home')
-            }
+                if(res.data.role !== 'warehouse') {
+                    this.$router.push('/store_home')
+                }
+                if(res.data.role === 'warehouse' && res.data.roleNumber !== 'admin') {
+                    this.$router.push('/warehouse_home')
+                }
             } else {
-            this.$router.push('/')
+                this.$router.push('/')
             }
         })
         this.$store.dispatch('getStores')
         this.$store.dispatch('getSuppliers')
         this.$store.dispatch('getProducts')
+        .then(() => {
+            this.isLoading = false;
+        })
     },
 }
 </script>
@@ -216,6 +260,9 @@ export default {
 }
 .search-button{
     margin-top: 20px;
+}
+.reset-button{
+    margin-bottom: 20px;
 }
 .search-button, .reset-button{
     font-size: 1em;

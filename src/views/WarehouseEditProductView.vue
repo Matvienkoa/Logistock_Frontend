@@ -6,43 +6,36 @@
     </router-link>
   </div>
   <div class="page-form">
+    <h1 class='title-edit'>{{getProduct.name}}</h1>
     <img crossorigin="anonymous" v-if="this.url" :src="this.url" alt="" class="product-img">
     <img crossorigin="anonymous" v-if="getProduct.image && this.url === ''" :src="getProduct.image" alt="" class="product-img">
     <div class="form">
-      <label class="label">Image</label>
+      <p class="label-form">Image<span class="img-infos">(max: 1 mo, formats: JPG, PNG, WEBP)</span></p>
       <input class="file-input" id="file" @change="onFileSelected" type="file" ref="imageUrl" name="file">
-      <label class="label">Référence<span class="star">*</span></label>
-      <input class="input required" @input="cancelError()" v-model="reference" type="text" placeholder="Référence Produit" />
-      <label class="label">Nom<span class="star">*</span></label>
-      <input class="input required" @input="cancelError()" v-model="name" type="text" placeholder="Nom du produit" />
-      <label class="label">Déscription</label>
-      <input class="input" v-model="description" type="text" placeholder="Déscription" />
-      <label class="label">Catégorie<span class="star">*</span></label>
-      <select @input="cancelError()" v-model="category" name="category" id="" class="input required">
-        <option value="epicerie">Epicerie</option>
-        <option value="frais">Frais</option>
-        <option value="alcool">Alcool</option>
-        <option value="soft">Soft</option>
-        <option value="linge">Linge</option>
-        <option value="emballage">Emballage</option>
-        <option value="entretien">Entretien</option>
-        <option value="materiel">Petits Matériels</option>
-        <option value="autre">Autre</option>
+      <p class="label-form">Référence<span class="star">*</span></p>
+      <input id="input-ref" class="input required" @input="cancelError()" v-model="reference" type="text" placeholder="Référence Produit" />
+      <p class="label-form">Nom<span class="star">*</span></p>
+      <input id="input-name" class="input required" @input="cancelError()" v-model="name" type="text" placeholder="Nom du produit" />
+      <p class="label-form">Déscription</p>
+      <input id="input-desc" class="input" v-model="description" type="text" placeholder="Déscription" />
+      <p class="label-form">Catégorie<span class="star">*</span></p>
+      <select @change="cancelError()" v-model="category" name="category" id="select-category" class="input required">
+        <option v-for="category in getCategories" :key="category.id" :value="category.id">{{category.name}}</option>
       </select>
-      <label class="label">Colisage<span class="star">*</span></label>
-      <input @input="cancelError()" class="input required" v-model="colisage" type="number" placeholder="Nombre d'unité(s) par colis" />
-      <label class="label">Délai d'appro<span class="star">*</span></label>
-      <input @input="cancelError()" class="input required" v-model="leadTime" type="number" placeholder="Délai d'appro (en Jour)" />
-      <label class="label">TVA<span class="star">*</span></label>
-      <select @input="cancelError()" class="input required" v-model="tva" name="tva" id="">
+      <p class="label-form">Colisage<span class="star">*</span></p>
+      <input id="input-colisage" @input="cancelError()" class="input required" v-model="colisage" type="number" min="0" placeholder="Nombre d'unité(s) par colis" />
+      <p class="label-form">Délai d'appro<span class="star">*</span></p>
+      <input id="input-leadtime" @input="cancelError()" class="input required" v-model="leadTime" type="number" min="0" placeholder="Délai d'appro (en Jour)" />
+      <p class="label-form">TVA<span class="star">*</span></p>
+      <select @change="cancelError()" class="input required" v-model="tva" name="tva" id="select-tva">
         <option value="5,5">5,5 %</option>
         <option value="10">10 %</option>
         <option value="20">20 %</option>
       </select>
-      <label class="label">Format<span class="star">*</span></label>
-      <input @input="cancelError()" class="input required" v-model="format" type="text" placeholder="Format du produit (CL, GR, CM...)" />
-      <label class="label">Fournisseur<span class="star">*</span></label>
-      <select @input="cancelError()" class="input required" v-model="supplier" name="supplier" id="">
+      <p class="label-form">Format<span class="star">*</span></p>
+      <input id="input-format" @input="cancelError()" class="input required" v-model="format" type="text" placeholder="Format du produit (CL, GR, CM...)" />
+      <p class="label-form">Fournisseur<span class="star">*</span></p>
+      <select @change="cancelError()" class="input required" v-model="supplier" name="supplier" id="select-supplier">
         <option v-for="supplier in getSuppliers" :key="supplier.id" :value="supplier.id">{{ supplier.name }}</option>
       </select>
       <div class="error" v-if="error">{{ error.message }}</div>
@@ -81,7 +74,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['getProduct', 'getSuppliers'])
+        ...mapGetters(['getProduct', 'getSuppliers', 'getCategories'])
     },
     methods: {
         cancelError() {
@@ -102,7 +95,7 @@ export default {
             formData.append('reference', this.reference)
             formData.append('name', this.name)
             formData.append('description', this.description)
-            formData.append('category', this.category)
+            formData.append('categoryId', this.category)
             formData.append('packaging', this.colisage)
             formData.append('leadTime', this.leadTime)
             formData.append('tva', this.tva)
@@ -116,7 +109,11 @@ export default {
                 }
             })
             .catch((error) => {
-              this.error = error.response.data;
+              if(error.response.status === 500) {
+                  this.error = {message: "Le Fichier est trop volumineux (max : 1 mo) ou son format n'est pas accepté (formats acceptés : .jpg, .png, .gif, .webp)"}
+              } else {
+                this.error = error.response.data;
+              }
               const emptyInput = document.querySelectorAll('.required');
               emptyInput.forEach(input => {
                   if(input.value === "") {
@@ -139,6 +136,9 @@ export default {
           if(res.data.role !== 'warehouse') {
             this.$router.push('/store_home')
           }
+          if(res.data.role === 'warehouse' && res.data.roleNumber !== 'admin') {
+            this.$router.push('/warehouse_home')
+          }
         } else {
           this.$router.push('/')
         }
@@ -148,7 +148,7 @@ export default {
         this.reference = res.data.reference
         this.name = res.data.name
         this.description = res.data.description
-        this.category = res.data.category
+        this.category = res.data.categoryId
         this.colisage = res.data.packaging
         this.leadTime = res.data.leadTime
         this.tva = res.data.tva
@@ -156,6 +156,7 @@ export default {
         this.supplier = res.data.supplierId
       })
       this.$store.dispatch('getSuppliers')
+      this.$store.dispatch('getCategories')
   },
 }
 </script>

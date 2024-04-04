@@ -1,4 +1,10 @@
 <template>
+<div v-if="isLoading" id="spinner" class="lds-ring">
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+</div>
 <Header :title="'Commandes'"/>
     <div class="back-head">
         <router-link to="/warehouse_preparation" class="back-button">Retour</router-link>
@@ -7,7 +13,7 @@
         <div v-if="orders.length <= 0" class="no-ordersPending">
             Pas de nouvelle commande pour le moment
         </div>
-        <router-link class="prepa-orders" v-for="order in getOrdersPending" :key="order.id" :to="{name: 'warehouse_preparation_new_order', params: {id: order.id}}">
+        <router-link class="prepa-orders" v-for="order in orders" :key="order.id" :to="{name: 'warehouse_preparation_new_order', params: {id: order.id}}">
             <div class="prepa-orders-infos">
                 <p>Le : <span class="bold">{{moment(order.createdAt).format('L')}}</span></p>
                 <p>N° : <span class="bold">{{order.id}}</span></p>
@@ -36,7 +42,8 @@ export default {
     data() {
         return {
             moment: moment,
-            orders: []
+            orders: [],
+            isLoading: false,
         }
     },
     computed: {
@@ -45,6 +52,7 @@ export default {
     methods: {
     },
     created: function () {
+        this.isLoading = true;
         this.$store.dispatch('checkToken')
         .then((res) => {
             if(res === 'expired') {
@@ -64,6 +72,7 @@ export default {
         this.$store.dispatch('getOrdersPending')
         .then(() => {
             this.orders = this.getOrdersPending
+            this.isLoading = false;
         })
     },
 }
@@ -93,5 +102,14 @@ export default {
 <style scoped>
 .no-ordersPending{
     margin-top: 30px;
+}
+</style>
+
+<style scoped>
+@media (max-width: 600px) {
+    .prepa-orders{
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }
 </style>

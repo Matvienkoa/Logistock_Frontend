@@ -4,20 +4,24 @@
     <router-link to="/warehouse_home" class="back-button">Retour</router-link>
   </div>
   <div class="page">
+    <router-link to="/warehouse_admin_logins" class="menu-links">
+      <div class="menu-bloc">
+        <img src="../assets/access.jpg" alt="" class="img-back">
+        <div class="title-card">Mes Comptes d'accès</div>
+      </div>
+    </router-link>
     <router-link to="/warehouse_admin_stores" class="menu-links">
       <div class="menu-bloc">
         <img src="../assets/store.webp" alt="" class="img-back">
         <div class="title-card">Mes Points de vente</div>
       </div>
     </router-link>
-
     <router-link to="/warehouse_admin_sales" class="menu-links">
       <div class="menu-bloc">
         <img src="../assets/sales.webp" alt="" class="img-back">
         <div class="title-card">Mes ventes</div>
       </div>
     </router-link>
-
     <router-link to="/warehouse_admin_stocks" class="menu-links">
       <div class="menu-bloc">
         <img src="../assets/value.webp" alt="" class="img-back">
@@ -55,6 +59,9 @@ export default {
       if(res.data) {
         if(res.data.role !== 'warehouse') {
           this.$router.push('/store_home')
+        }
+        if(res.data.role === 'warehouse' && res.data.roleNumber !== 'admin') {
+          this.$router.push('/warehouse_home')
         }
       } else {
         this.$router.push('/')

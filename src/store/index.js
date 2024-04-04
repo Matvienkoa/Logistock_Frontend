@@ -5,11 +5,15 @@ import jwt_decode from "jwt-decode";
 export default createStore({
   state: {
     user: "",
+    login: "",
+    logins: [],
     profile: "",
     supplier: "",
     suppliers: [],
     product: "",
     products: [],
+    category: "",
+    categories: [],
     stock: "",
     store: "",
     stores: "",
@@ -27,8 +31,26 @@ export default createStore({
     sales: [],
     cartForIcon: [],
     modeBillOrder: "",
+    modePurchase: "",
     ordersToBill: [],
-    stocks: []
+    stocks: [],
+    filtersProducts: {
+      search: "",
+      category: "",
+      supplier: "",
+      onSale: ""
+    },
+    filtersStocks: {
+      search: "",
+      category: "",
+      supplier: "",
+      onSale: ""
+    },
+    filtersCatalog: {
+      search: "",
+      category: ""
+    },
+    modeAddProductToOrder: false,
   },
   getters: {
     getCartForIcon: (state) => {
@@ -36,6 +58,12 @@ export default createStore({
     },
     getUser: (state) => {
       return state.user
+    },
+    getLogin: (state) => {
+      return state.login
+    },
+    getLogins: (state) => {
+      return state.logins
     },
     getProfile: (state) => {
       return state.profile
@@ -51,6 +79,12 @@ export default createStore({
     },
     getProducts: (state) => {
       return state.products
+    },
+    getCategory: (state) => {
+      return state.category
+    },
+    getCategories: (state) => {
+      return state.categories
     },
     getStock: (state) => {
       return state.stock
@@ -87,6 +121,21 @@ export default createStore({
     },
     getStocks: (state) => {
       return state.stocks
+    },
+    getModePurchase: (state) => {
+      return state.modePurchase
+    },
+    getFiltersProducts: (state) => {
+      return state.filtersProducts
+    },
+    getFiltersStocks: (state) => {
+      return state.filtersStocks
+    },
+    getFiltersCatalog: (state) => {
+      return state.filtersCatalog
+    },
+    getModeAddProductToOrder: (state) => {
+      return state.modeAddProductToOrder
     }
   },
   mutations: {
@@ -106,6 +155,12 @@ export default createStore({
     SET_USER: function (state, user) {
       state.user = user
     },
+    SET_LOGIN: function (state, login) {
+      state.login = login
+    },
+    SET_LOGINS: function (state, logins) {
+      state.logins = logins
+    },
     SET_PROFILE: function (state, profile) {
       state.profile = profile
     },
@@ -120,6 +175,12 @@ export default createStore({
     },
     SET_PRODUCTS: function (state, products) {
       state.products = products
+    },
+    SET_CATEGORY: function (state, category) {
+      state.category = category
+    },
+    SET_CATEGORIES: function (state, categories) {
+      state.categories = categories
     },
     SET_STOCK: function (state, stock) {
       state.stock = stock
@@ -177,6 +238,12 @@ export default createStore({
     },
     SET_STOCKS: function (state, stocks) {
       state.stocks = stocks
+    },
+    SET_MODE_PURCHASE: function (state, modePurchase) {
+      state.modePurchase = modePurchase
+    },
+    RESET_MODE_PURCHASE: function (state) {
+      state.modePurchase = ""
     }
   },
   actions: {
@@ -274,6 +341,54 @@ export default createStore({
         instance.get(`/supplier/${supplierId}`)
           .then(function (response) {
             commit('SET_SUPPLIER', response.data)
+            resolve(response)
+          })
+          .catch(function (error) {
+            reject(error);
+          });
+      })
+    },
+    addCategory: ({ commit }, category) => {
+      return new Promise((resolve, reject) => {
+        instance.post('/category/', category)
+          .then(function (response) {
+            commit('SET_CATEGORY', response.data)
+            resolve(response)
+          })
+          .catch(function (error) {
+            reject(error);
+          });
+      })
+    },
+    editCategory: ({ commit }, category) => {
+      return new Promise((resolve, reject) => {
+        instance.put(`/category/${category.id}`, category)
+          .then(function (response) {
+            commit('SET_CATEGORY', response.data)
+            resolve(response)
+          })
+          .catch(function (error) {
+            reject(error);
+          });
+      })
+    },
+    getCategories: ({ commit }) => {
+      return new Promise((resolve, reject) => {
+        instance.get(`/category/`)
+          .then(function (response) {
+            commit('SET_CATEGORIES', response.data)
+            resolve(response)
+          })
+          .catch(function (error) {
+            reject(error);
+          });
+      })
+    },
+    getCategory: ({ commit }, categoryId) => {
+      return new Promise((resolve, reject) => {
+        instance.get(`/category/${categoryId}`)
+          .then(function (response) {
+            commit('SET_CATEGORY', response.data)
             resolve(response)
           })
           .catch(function (error) {
@@ -465,6 +580,30 @@ export default createStore({
         instance.get(`/stock/`)
           .then(function (response) {
             commit('SET_STOCKS', response.data)
+            resolve(response)
+          })
+          .catch(function (error) {
+            reject(error);
+          });
+      })
+    },
+    getLogins: ({ commit }) => {
+      return new Promise((resolve, reject) => {
+        instance.get(`/user/`)
+          .then(function (response) {
+            commit('SET_LOGINS', response.data)
+            resolve(response)
+          })
+          .catch(function (error) {
+            reject(error);
+          });
+      })
+    },
+    getLogin: ({ commit }, loginId) => {
+      return new Promise((resolve, reject) => {
+        instance.get(`/user/${loginId}`)
+          .then(function (response) {
+            commit('SET_LOGIN', response.data)
             resolve(response)
           })
           .catch(function (error) {

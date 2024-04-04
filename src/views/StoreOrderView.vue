@@ -1,4 +1,10 @@
 <template>
+<div v-if="isLoading" id="spinner" class="lds-ring">
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+</div>
 <Header :title="'Commande'"/>
   <div class="back-head">
     <router-link to="/store_orders" class="back-button">Retour</router-link>
@@ -19,7 +25,7 @@
           <div v-if="product.id !== 'deleted'" class="bloc-card-top">
             <div class="bloc-card-image-box">
               <img crossorigin="anonymous" v-if="product.image" :src="product.image" alt="" class="bloc-card-image">
-              <img crossorigin="anonymous" v-if="!product.image" src="../assets/3.webp" alt="" class="bloc-card-image no-pic">
+              <img crossorigin="anonymous" v-if="!product.image" src="../assets/logo.png" alt="" class="bloc-card-image no-pic">
             </div>
             <div class="quantity-in-cart">
               <div class="quantity-box">
@@ -70,12 +76,14 @@ export default {
           products: [],
           status: "",
           moment: moment,
+          isLoading: false,
       }
   },
   computed: {
         ...mapGetters(['getOrder'])
   },
   created: function () {
+    this.isLoading = true;
       this.$store.dispatch('checkToken')
       .then((res) => {
         if(res === 'expired') {
@@ -107,6 +115,7 @@ export default {
                 }
             })
         });
+        this.isLoading = false;
       })
   },
 }

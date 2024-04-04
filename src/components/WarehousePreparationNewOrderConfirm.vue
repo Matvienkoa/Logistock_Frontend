@@ -5,7 +5,7 @@
                 <p class="confirm-order-title">Valider la commande?</p>
                 <div class="comment-box">
                     <p>Ajouter un commentaire :</p>
-                    <textarea v-model="commentWarehouse" cols="30" rows="10"></textarea>
+                    <textarea id="input-comment" v-model="commentWarehouse" cols="30" rows="10"></textarea>
                 </div>
                 <div class="confirm-order-buttons">
                     <button class="confirm-order-button" @click="confirmOrder()">Valider</button>
@@ -69,7 +69,7 @@ export default {
 
 <style scoped>
 .confirm-order-back{
-    position: absolute;
+    position: fixed;
     z-index: 2;
     width: 100%;
     height: 100%;

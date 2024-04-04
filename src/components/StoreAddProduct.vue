@@ -4,8 +4,8 @@
             <div class="add-product-box">
                 <p class="add-product-title">{{ getProduct.name }}</p>
                 <div class="add-product-input">
-                    <label for="">Quantité : </label>
-                    <input v-model="quantity" type="number" name="" id="">
+                    <p class="label-form">Quantité : </p>
+                    <input @input="cancelError" v-model="quantity" type="number" min="1" id="quantity-input">
                 </div>
                 <div class="error" v-if="error">{{ error }}</div>
                 <button class="add-product-button" @click="addProduct()">Ajouter</button>
@@ -69,6 +69,9 @@ export default {
                 }
             }
         },
+        cancelError() {
+            this.error = ""
+        }
     },
     created() {
         this.$store.dispatch('getProfile')
@@ -117,13 +120,17 @@ export default {
     align-items: center;
     justify-content: center;
 }
-.add-product-input label{
+.add-product-input .label-form{
     margin-right: 10px;
+    margin-bottom: 0;
+    margin-top: 3px;
 }
 .add-product-input input{
     width: 100px;
     font-size: 1.3em;
     cursor: pointer;
+    border-radius: 6px;
+    padding-left: 5px;
 }
 .add-product-button{
     border: none;

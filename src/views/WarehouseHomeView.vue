@@ -1,6 +1,6 @@
 <template>
 <Header :title="'Accueil'"/>
-  <div class="page">
+  <div id="test" class="page">
     <router-link v-if="getProfile.roleNumber === 'admin'" to="/warehouse_stock" class="menu-links">
       <div class="menu-bloc">
         <img src="../assets/warehouse.webp" alt="" class="img-back">
@@ -61,6 +61,6 @@ export default {
 
 <style>
 .bottom{
-  margin-bottom: 60px;
+  margin-bottom: 100px;
 }
 </style>

@@ -1,4 +1,10 @@
 <template>
+<div v-if="isLoading" id="spinner" class="lds-ring">
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+</div>
 <Header :title="'Fournisseur'"/>
   <div class="back-head">
     <router-link to="/warehouse_suppliers" class="back-button">Retour</router-link>
@@ -7,13 +13,16 @@
     <div class="page-mono-bloc">
       <h1 class="page-mono-title">{{getSupplier.name}}</h1>
       <div class="page-mono-infos">
+        <p>Numéro client : {{getSupplier.number}}</p>
+        <p>Siret : {{getSupplier.siret}}</p>
         <p>{{getSupplier.adress}}</p>
         <p>{{getSupplier.adress2}}</p>
         <p>{{getSupplier.postalCode}}</p>
         <p>{{getSupplier.city}}</p>
-        <p v-if="getSupplier.contact">Contact : {{getSupplier.contact}}</p>
+        <p>Contact : {{getSupplier.contact}}</p>
         <p>{{getSupplier.tel}}</p>
         <p>{{getSupplier.mail}}</p>
+        <p>Commentaire : {{getSupplier.comment}}</p>
       </div>
     </div>
     <div v-if="getSupplier.name !== 'Autre'" class="page-mono-buttons">
@@ -22,13 +31,16 @@
       </router-link>
       <div class="delete-button" @click="switchToConfirm()">Supprimer</div>
     </div>
-    <div class="show-confirm" v-if="mode === 'confirm'">
-        <p class="confirm-text">Supprimer le fournisseur?</p>
-        <p class="confirm-text">Attention, tous les produits liés à ce fournisseur se retrouveront "sans fournisseur"!</p>
-        <div class="choice-box">
-            <button class="confirm-button" @click="deleteSupplier()">Supprimer</button>
-            <div class="cancel-button" @click="cancelConfirm()">Annuler</div>
+    <div class="popup-confirm-page" v-if="mode === 'confirm'">
+      <div class="popup-confirm-box">
+        <p class="popup-confirm-text">Supprimer le fournisseur?</p>
+        <img src="../assets/danger-red.svg" alt="" class="popup-danger">
+        <p class="popup-confirm-text">Attention, tous les produits liés à ce fournisseur se retrouveront "sans fournisseur"!</p>
+        <div class="popup-choice-box">
+            <button class="popup-confirm-button" @click="deleteSupplier()">Supprimer</button>
+            <div class="popup-cancel-button" @click="cancelConfirm()">Annuler</div>
         </div>
+      </div>
     </div>
   </div>
 <Footer/>
@@ -48,7 +60,8 @@ export default {
   },
   data() {
       return {
-          mode: ""
+          mode: "",
+          isLoading: false,
       }
   },
   computed: {
@@ -71,6 +84,7 @@ export default {
     }
   },
   created: function () {
+    this.isLoading = true;
       this.$store.dispatch('checkToken')
       .then((res) => {
         if(res === 'expired') {
@@ -83,11 +97,17 @@ export default {
           if(res.data.role !== 'warehouse') {
             this.$router.push('/store_home')
           }
+          if(res.data.role === 'warehouse' && res.data.roleNumber !== 'admin') {
+            this.$router.push('/warehouse_home')
+          }
         } else {
           this.$router.push('/')
         }
       })
       this.$store.dispatch('getSupplier', this.$route.params.id)
+      .then(() => {
+        this.isLoading = false;
+      })
   },
 }
 </script>
@@ -146,6 +166,62 @@ export default {
   cursor: pointer;
   margin-left: 10px;
 }
+
+.popup-confirm-page{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  background-color: rgba(179, 179, 179, 0.829);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.popup-confirm-box{
+  position: absolute;
+  background-color: white;
+  width: 90%;
+  max-width: 400px;
+  margin: auto;
+  padding: 30px 10px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+}
+.popup-confirm-text{
+  width: 100%;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 10px;
+}
+.popup-choice-box{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+.popup-confirm-button{
+  background-color: #ea510b;
+  padding: 5px 10px;
+  margin-right: 5px;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+}
+.popup-cancel-button{
+  cursor: pointer;
+  margin-left: 5px;
+  font-weight: 600;
+}
+.popup-danger{
+  width: 40px;
+  margin-bottom: 10px;
+}
 .show-confirm{
   margin-top: 15px;
   width: 80%;
@@ -156,6 +232,7 @@ export default {
   margin: auto;
   margin-top: 5px;
   font-weight: bold;
+  color: #ea510b;
 }
 .choice-box{
   display: flex;

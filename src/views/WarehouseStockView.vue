@@ -56,6 +56,9 @@ export default {
         if(res.data.role !== 'warehouse') {
           this.$router.push('/store_home')
         }
+        if(res.data.role === 'warehouse' && res.data.roleNumber !== 'admin') {
+          this.$router.push('/warehouse_home')
+        }
       } else {
         this.$router.push('/')
       }

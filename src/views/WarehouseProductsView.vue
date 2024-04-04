@@ -1,42 +1,53 @@
 <template>
+<div v-if="isLoading" id="spinner" class="lds-ring">
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+</div>
 <Header :title="'Références'"/>
   <div class="back-head">
     <router-link to="/warehouse_stock" class="back-button">Retour</router-link>
     <router-link to="/warehouse_add_product" class="cart-button">Créer un produit</router-link>
   </div>
+  <div class="category-box">
+    <router-link to="/warehouse_categories" class="category-button">Gérer mes catégories</router-link>
+  </div>
   <div class="search-box">
-    <select v-model="categorySelected" name="category" id="" class="search-input">
+    <div class="search-key-box">
+      <img src="../assets/search.svg" alt="" class="search-key-icon">
+      <input id="search-key-input" v-model="searchKey" @change="updateFiltersSearch(searchKey)" type="search" class="search-key" placeholder="Recherche...">
+    </div>
+    <select v-model="categorySelected" @change="updateFiltersCategory(categorySelected)" name="category" id="select-category" class="search-input">
       <option value="">Toutes les Catégories</option>
-      <option value="epicerie">Epicerie</option>
-      <option value="frais">Frais</option>
-      <option value="alcool">Alcool</option>
-      <option value="soft">Soft</option>
-      <option value="linge">Linge</option>
-      <option value="emballage">Emballage</option>
-      <option value="entretien">Entretien</option>
-      <option value="materiel">Petits Matériels</option>
-      <option value="autre">Autre</option>
+      <option :value="null">Sans Catégorie attribuée</option>
+      <option v-for="category in getCategories" :key="category.id" :value="category.id">{{category.name}}</option>
     </select>
-    <select v-model="supplierSelected" name="supplier" class="search-input">
+    <select v-model="supplierSelected" @change="updateFiltersSupplier(supplierSelected)" name="supplier" id="select-supplier" class="search-input">
       <option value="">Tous les Fournisseurs</option>
       <option :value="null">Sans fournisseur attribué</option>
       <option v-for="supplier in getSuppliers" :key="supplier.id" :value="supplier.id">{{supplier.name}}</option>
     </select>
-    <select v-model="onSale" name="onSale" class="search-input">
+    <select v-model="onSale" @change="updateFiltersOnSale(onSale)" name="onSale" id="select-onsale" class="search-input">
       <option value="">Disponibilité</option>
       <option value="yes">Disponibles à la vente</option>
       <option value="no">Indisponibles à la vente</option>
     </select>
+    <div v-if="searchKey || categorySelected || supplierSelected || onSale" @click="resetFilters()" class="close-filters">
+      <p>Supprimer les filtres</p>
+      <img crossorigin="anonymous" src="../assets/close-white.svg" alt="" class="close-white">
+    </div>
   </div>
   <div class="page-products">
-    <div class="no-result" v-if="getProducts.length === 0">Vous n'avez pas enregistré de Produit</div>
-    <div v-for="product in getProducts" :key="product.id">
-      <router-link v-if="(product.category === categorySelected || categorySelected === '') && (product.supplierId === supplierSelected || supplierSelected === '') && (product.onSale === onSale || onSale === '')" :to="{name: 'warehouse_product', params: {id: product.id}}" class="bloc-card">
+    <div class="no-result" v-if="products.length === 0">Vous n'avez pas enregistré de Produit</div>
+    <p class="no-result" v-if="checkIfProduct.length === 0 && products.length !== 0">Aucun produit ne correspond à votre recherche</p>
+    <div v-for="product in search" :key="product.id">
+      <router-link v-if="(product.categoryId === categorySelected || categorySelected === '') && (product.supplierId === supplierSelected || supplierSelected === '') && (product.onSale === onSale || onSale === '')" :to="{name: 'warehouse_product', params: {id: product.id}}" class="bloc-card">
         <img v-if="product.onSale === 'yes'" class="circle-order" src="../assets/circle-validated.svg" alt="">
         <img v-if="product.onSale === 'no'" class="circle-order" src="../assets/circle-pending.svg" alt="">
         <div class="bloc-card-image-box">
           <img crossorigin="anonymous" v-if="product.image" :src="product.image" alt="" class="bloc-card-image">
-          <img crossorigin="anonymous" v-if="!product.image" src="../assets/3.webp" alt="" class="bloc-card-image no-pic">
+          <img crossorigin="anonymous" v-if="!product.image" src="../assets/logo.png" alt="" class="bloc-card-image no-pic">
         </div>
         <div class="bloc-card-infos-box">
           <h2>{{ product.name }}</h2>
@@ -65,13 +76,53 @@ export default {
     return {
       categorySelected: "",
       supplierSelected: "",
-      onSale: ""
+      onSale: "",
+      products: [],
+      searchKey: "",
+      isLoading: false,
     }
   },
   computed: {
-      ...mapGetters(['getProducts', 'getSuppliers'])
+      ...mapGetters(['getProducts', 'getSuppliers', 'getCategories', 'getFiltersProducts']),
+      search() {
+        return this.products.filter((product) => {
+          return product.name.toLowerCase().includes(this.searchKey.toLowerCase())
+        })
+      },
+      checkIfProduct() {
+        return this.search.filter((product) => {
+          if ((product.categoryId === this.categorySelected || this.categorySelected === '') && (product.supplierId === this.supplierSelected || this.supplierSelected === '') && (product.onSale === this.onSale || this.onSale === '')) {
+            return product
+          }
+        })
+      }
+  },
+  methods: {
+    updateFiltersCategory(value) {
+      this.$store.state.filtersProducts.category = value
+    },
+    updateFiltersSupplier(value) {
+      this.$store.state.filtersProducts.supplier = value
+    },
+    updateFiltersOnSale(value) {
+      this.$store.state.filtersProducts.onSale = value
+    },
+    updateFiltersSearch(value) {
+      this.$store.state.filtersProducts.search = value
+    },
+    resetFilters() {
+      this.categorySelected = ""
+      this.supplierSelected = ""
+      this.searchKey = ""
+      this.onSale = ""
+      this.$store.state.filtersProducts.category = ""
+      this.$store.state.filtersProducts.supplier = ""
+      this.$store.state.filtersProducts.onSale = ""
+      this.$store.state.filtersProducts.search = ""
+    }
   },
   created: function () {
+      this.isLoading = true;
       this.$store.dispatch('checkToken')
       .then((res) => {
         if(res === 'expired') {
@@ -84,17 +135,67 @@ export default {
           if(res.data.role !== 'warehouse') {
             this.$router.push('/store_home')
           }
+          if(res.data.role === 'warehouse' && res.data.roleNumber !== 'admin') {
+            this.$router.push('/warehouse_home')
+          }
         } else {
           this.$router.push('/')
         }
       })
+      this.categorySelected = this.$store.state.filtersProducts.category
+      this.supplierSelected = this.$store.state.filtersProducts.supplier
+      this.onSale = this.$store.state.filtersProducts.onSale
+      this.searchKey = this.$store.state.filtersProducts.search
       this.$store.dispatch('getProducts')
+      .then((res) => {
+        this.products = res.data
+        this.isLoading = false;
+      })
       this.$store.dispatch('getSuppliers')
+      this.$store.dispatch('getCategories')
   },
 }
 </script>
 
 <style>
+.search-key-box{
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 25px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.search-key-icon{
+  width: 20px;
+  margin-right: 5px;
+}
+.search-key{
+  width: 175px;
+  max-width: 225px;
+  height: 100%;
+  border-radius: 10px;
+  font-size: 0.9em;
+  padding: 0 10px;
+}
+.close-filters{
+  width: 200px;
+  max-width: 250px;
+  height: 25px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  cursor: pointer;
+  color: white;
+  font-size: 0.9em;
+  background: rgb(214, 19, 19);
+  margin-bottom: 10px;
+}
+.close-white{
+  width: 12px;
+}
 .page-products{
   position: relative;
   width: 100%;
@@ -177,6 +278,21 @@ export default {
 </style>
 
 <style scoped>
+.category-box{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 70px;
+}
+.category-button{
+  background-image: linear-gradient(52deg, rgb(132, 193, 233),rgb(44, 102, 189));
+  text-decoration: none;
+  padding: 5px 20px;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
 .page-products{
   padding-top: 30px;
 }
@@ -188,7 +304,7 @@ export default {
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  margin-top: 70px;
+  margin-top: 20px;
 }
 .search-input{
   width: 200px;
@@ -217,5 +333,15 @@ export default {
 .circle-order{
   position: absolute;
   right: 10px;
+}
+
+/* Responsiv */
+@media (min-width: 700px) {
+  .category-box{
+    margin-top: 15px;
+  }
+  .search-box{
+    margin-top: 40px;
+  }
 }
 </style>

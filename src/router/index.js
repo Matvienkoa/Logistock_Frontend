@@ -1,5 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
-
+import { createRouter, createWebHashHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
 
 // ============== WAREHOUSE ==============
@@ -14,6 +13,12 @@ import WarehouseProducts from '../views/WarehouseProductsView'
 import WarehouseProduct from '../views/WarehouseProductView'
 import WarehouseAddProduct from '../views/WarehouseAddProductView'
 import WarehouseEditProduct from '../views/WarehouseEditProductView'
+import WarehouseEditPermissionsProduct from '../views/WarehouseEditPermissionsProductView'
+import WarehouseEditSellingPriceProduct from '../views/WarehouseEditSellingPriceProductView'
+import WarehouseCategories from '../views/WarehouseCategoriesView'
+import WarehouseCategory from '../views/WarehouseCategoryView'
+import WarehouseAddCategory from '../views/WarehouseAddCategoryView'
+import WarehouseEditCategory from '../views/WarehouseEditCategoryView'
 import WarehouseInventory from '../views/WarehouseInventoryView'
 import WarehouseInventoryProduct from '../views/WarehouseInventoryProductView'
 import WarehouseInventoryAddStockProduct from '../views/WarehouseInventoryAddStockProductView'
@@ -31,7 +36,10 @@ import WarehouseAdminStores from '../views/WarehouseAdminStoresView'
 import WarehouseAdminStore from '../views/WarehouseAdminStoreView'
 import WarehouseAdminSales from '../views/WarehouseAdminSalesView'
 import WarehouseAdminStocks from '../views/WarehouseAdminStocksView'
-
+import WarehouseAdminLogins from '../views/WarehouseAdminLoginsView'
+import WarehouseAdminLogin from '../views/WarehouseAdminLoginView'
+import WarehouseAdminAddLogin from '../views/WarehouseAdminAddLoginView'
+import WarehouseAdminPassword from '../views/WarehouseAdminPasswordView'
 
 // ============== STORE ==============
 import StoreHome from '../views/StoreHomeView'
@@ -104,6 +112,37 @@ const routes = [
     name: 'warehouse_edit_product',
     component: WarehouseEditProduct
   },
+  {
+    path: '/warehouse_edit_permissions_product/:id',
+    name: 'warehouse_edit_permissions_product',
+    component: WarehouseEditPermissionsProduct
+  },
+  {
+    path: '/warehouse_edit_selling_price_product/:id',
+    name: 'warehouse_edit_selling_price_product',
+    component: WarehouseEditSellingPriceProduct
+  },
+  // Categories
+  {
+    path: '/warehouse_categories',
+    name: 'warehouse_categories',
+    component: WarehouseCategories
+  },
+  {
+    path: '/warehouse_category/:id',
+    name: 'warehouse_category',
+    component: WarehouseCategory
+  },
+  {
+    path: '/warehouse_add_category',
+    name: 'warehouse_add_category',
+    component: WarehouseAddCategory
+  },
+  {
+    path: '/warehouse_edit_category/:id',
+    name: 'warehouse_edit_category',
+    component: WarehouseEditCategory
+  },
   // Inventory
   {
     path: '/warehouse_inventory',
@@ -131,7 +170,6 @@ const routes = [
     name: 'warehouse_date_stocks',
     component: WarehouseDateStocks
   },
-
   // ---------- Warehouse Preparation ----------
   {
     path: '/warehouse_preparation',
@@ -189,6 +227,27 @@ const routes = [
     name: 'warehouse_admin_stocks',
     component: WarehouseAdminStocks
   },
+  // Logins
+  {
+    path: '/warehouse_admin_logins',
+    name: 'warehouse_admin_logins',
+    component: WarehouseAdminLogins
+  },
+  {
+    path: '/warehouse_admin_login/:id',
+    name: 'warehouse_admin_login',
+    component: WarehouseAdminLogin
+  },
+  {
+    path: '/warehouse_admin_add_login',
+    name: 'warehouse_admin_add_login',
+    component: WarehouseAdminAddLogin
+  },
+  {
+    path: '/warehouse_admin_password/:id',
+    name: 'warehouse_admin_password',
+    component: WarehouseAdminPassword
+  },
 // ============== STORE ==============
   {
     path: '/store_home',
@@ -227,11 +286,10 @@ const routes = [
     name: 'store_order',
     component: StoreOrder
   },
-  
 ]
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHashHistory(process.env.BASE_URL),
   routes
 })
 

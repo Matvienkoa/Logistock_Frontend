@@ -1,8 +1,69 @@
 <template>
+  <UpdateNotification />
   <router-view/>
 </template>
 
+<script>
+import UpdateNotification from './components/UpdateNotification.vue';
+
+export default {
+  name: 'App',
+  components: {
+    UpdateNotification
+  },
+};
+</script>
+
 <style>
+/* Spinner */
+.lds-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.671);
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border: 8px solid #c90200;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #c90200 transparent transparent transparent;
+  z-index: 9998;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.on {
+  opacity: 0.3;
+  transition: 400ms;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   color: #2c3e50;

@@ -1,15 +1,25 @@
 <template>
   <div id="home">
+    <div id="spinner" class="spinner-off">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
     <img src="../assets/pizza-back.webp" alt="" id="pizza-back">
     <div id="form">
       <div id="logo-main">
-        <img src="../assets/3.webp" alt="" id="logo-sp">
+        <img src="../assets/logo.png" alt="" id="logo-sp">
       </div>
       <div id="form-input">
-        <label>Identifiant</label>
-        <input @input="cancelError()" v-model="login" type="text" class="input">
-        <label>Mot de Passe</label>
-        <input @input="cancelError()" v-model="password" type="password" class="input">
+        <p class="label-form">Identifiant</p>
+        <input @input="cancelError()" v-model="login" type="text" class="input required" id="login-input">
+        <p class="label-form">Mot de Passe</p>
+        <div class="password-box">
+          <input @input="cancelError()" @keyup.enter="logedIn()" v-model="password" type="password" class="required" id="password-input">
+          <img crossorigin="anonymous" v-if="modePassword === 'hidden'" @click="showPassword()" class="home-form-password-icon" alt="" src="../assets/eye.svg">
+          <img crossorigin="anonymous" v-if="modePassword === 'visible'" @click="hidePassword()" class="home-form-password-icon" alt="" src="../assets/eye-slash.svg">
+        </div>
         <div v-if="error" class="error">{{ error.message }}</div>
       </div>
       <button @click="logedIn()" id="button-login">Connexion</button>
@@ -19,7 +29,7 @@
       </div>
     </div>
     <div id="logos-1">
-      <img src="../assets/logo-sp-petit.webp" alt="" class="logo-login-1">
+      <img src="../assets/logo-sp-petit.png" alt="" class="logo-login-1">
       <img src="../assets/logo-mburger-petit.webp" alt="" class="logo-login-1">
     </div>
   </div>
@@ -34,14 +44,38 @@ export default {
     return {
       error: "",
       login: "",
-      password: ""
+      password: "",
+      modePassword: 'hidden'
     }
   },
   computed: {
       ...mapGetters(['getProfile'])
   },
   methods: {
+    showPassword() {
+      this.modePassword = 'visible'
+      const input = document.getElementById('password-input')
+      input.type = 'text'
+    },
+    hidePassword() {
+      this.modePassword = 'hidden'
+      const input = document.getElementById('password-input')
+      input.type = 'password'
+    },
+    showSpinner() {
+      const spinner = document.getElementById('spinner');
+      spinner.classList.replace('spinner-off', 'lds-ring');
+      const body = document.getElementById('home');
+      body.classList.add('on');
+    },
+    hideSpinner() {
+      const spinner = document.getElementById('spinner');
+      spinner.classList.replace('lds-ring', 'spinner-off');
+      const body = document.getElementById('home');
+      body.classList.remove('on');
+    },
     logedIn() {
+      this.showSpinner();
       this.$store.dispatch('login', {
         login: this.login,
         password: this.password
@@ -49,6 +83,7 @@ export default {
       .then(() => {
         this.$store.dispatch("getProfile")
         .then((res) => {
+          this.hideSpinner();
           if (res.data.role === "warehouse") {
             this.$router.push("warehouse_home");
           }
@@ -58,8 +93,9 @@ export default {
         })
       })
       .catch((error) => {
+        this.hideSpinner();
         this.error = error.response.data
-        const emptyInput = document.querySelectorAll('.input');
+        const emptyInput = document.querySelectorAll('.required');
           emptyInput.forEach(input => {
               if(input.value === "") {
                   input.classList.add('empty')
@@ -68,7 +104,7 @@ export default {
       })
     },
     cancelError() {
-      const emptyInput = document.querySelectorAll('.input');
+      const emptyInput = document.querySelectorAll('.required');
       emptyInput.forEach(input => {
           if(input.value !== "") {
               input.classList.remove('empty')
@@ -149,12 +185,12 @@ export default {
   margin-top: 60px;
   margin-bottom: 20px;
 }
-label{
+.label-form{
   margin-bottom: 5px;
   margin-left: 5px;
   font-weight: 600;
 }
-input{
+.input{
   width: 96%;
   height: 30px;
   margin-bottom: 20px;
@@ -165,6 +201,32 @@ input{
 }
 input:focus{
   outline: none;
+}
+.password-box{
+  position: relative;
+  width: 99%;
+  height: 30px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#password-input{
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  background-color: rgb(226, 226, 226);
+  border-radius: 3px;
+  padding-left: 10px;
+  padding-right: 30px;
+}
+.home-form-password-icon{
+  position: absolute;
+  height: 50%;
+  right: 4%;
+  top: 25%;
+  cursor: pointer;
 }
 button{
   font-size: 1.2em;

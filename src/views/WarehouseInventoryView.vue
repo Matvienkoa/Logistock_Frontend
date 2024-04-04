@@ -1,43 +1,51 @@
 <template>
+<div v-if="isLoading" id="spinner" class="lds-ring">
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+</div>
 <Header :title="'Stocks'"/>
   <div class="back-head">
     <router-link to="/warehouse_stock" class="back-button">Retour</router-link>
   </div>
   <div class="page">
     <div class="search-box">
-      <select v-model="categorySelected" name="category" id="" class="search-input">
+      <div class="search-key-box">
+        <img src="../assets/search.svg" alt="" class="search-key-icon">
+        <input id="search-key-input" v-model="searchKey" @change="updateFiltersSearch(searchKey)" type="search" class="search-key" placeholder="Recherche...">
+      </div>
+      <select v-model="categorySelected" @change="updateFiltersCategory(categorySelected)" name="category" id="select-category" class="search-input">
         <option value="">Toutes les Catégories</option>
-        <option value="epicerie">Epicerie</option>
-        <option value="frais">Frais</option>
-        <option value="alcool">Alcool</option>
-        <option value="soft">Soft</option>
-        <option value="linge">Linge</option>
-        <option value="emballage">Emballage</option>
-        <option value="entretien">Entretien</option>
-        <option value="materiel">Petits Matériels</option>
-        <option value="autre">Autre</option>
+        <option :value="null">Sans Catégorie attribuée</option>
+      <option v-for="category in getCategories" :key="category.id" :value="category.id">{{category.name}}</option>
       </select>
-      <select v-model="supplierSelected" name="supplier" class="search-input">
+      <select v-model="supplierSelected" @change="updateFiltersSupplier(supplierSelected)" name="supplier" id="select-supplier" class="search-input">
         <option value="">Tous les Fournisseurs</option>
         <option :value="null">Sans fournisseur attribué</option>
         <option v-for="supplier in getSuppliers" :key="supplier.id" :value="supplier.id">{{supplier.name}}</option>
       </select>
-      <select v-model="onSale" name="onSale" class="search-input">
+      <select v-model="onSale" @change="updateFiltersOnSale(onSale)" name="onSale" id="select-onsale" class="search-input">
         <option value="">Disponibilité</option>
         <option value="yes">Disponibles à la vente</option>
         <option value="no">Indisponibles à la vente</option>
       </select>
+      <div v-if="searchKey || categorySelected || supplierSelected || onSale" @click="resetFilters()" class="close-filters">
+        <p>Supprimer les filtres</p>
+        <img crossorigin="anonymous" src="../assets/close-white.svg" alt="" class="close-white">
+      </div>
     </div>
-    <div class="no-result" v-if="getProducts.length === 0">Vous n'avez pas enregistré de Produit</div>
+    <div class="no-result" v-if="products.length === 0">Vous n'avez pas enregistré de Produit</div>
+    <p class="no-result" v-if="checkIfProduct.length === 0 && products.length !== 0">Aucun produit ne correspond à votre recherche</p>
     <div class="page-stocks">
-      <div v-for="product in getProducts" :key="product.id">
-        <router-link v-if="(product.category === categorySelected || categorySelected === '') && (product.supplierId === supplierSelected || supplierSelected === '') && (product.onSale === onSale || onSale === '')" :to="{name: 'warehouse_inventory_product', params: {id: product.id}}" class="link-products">
+      <div v-for="product in search" :key="product.id">
+        <router-link v-if="(product.categoryId === categorySelected || categorySelected === '') && (product.supplierId === supplierSelected || supplierSelected === '') && (product.onSale === onSale || onSale === '')" :to="{name: 'warehouse_inventory_product', params: {id: product.id}}" class="link-products">
           <img v-if="product.onSale === 'yes'" class="circle-order" src="../assets/circle-validated.svg" alt="">
           <img v-if="product.onSale === 'no'" class="circle-order" src="../assets/circle-pending.svg" alt="">
           <div class="title-box-products">
             <div class="img-box-products">
               <img crossorigin="anonymous" v-if="product.image" :src="product.image" alt="" class="img-products">
-              <img crossorigin="anonymous" v-if="!product.image" src="../assets/3.webp" alt="" class="img-products no-pic">
+              <img crossorigin="anonymous" v-if="!product.image" src="../assets/logo.png" alt="" class="img-products no-pic">
             </div>
             <div>{{ product.name }}</div>
           </div>
@@ -75,13 +83,50 @@ export default {
     return {
       categorySelected: "",
       supplierSelected: "",
-      onSale: ""
+      onSale: "",
+      products: [],
+      searchKey: "",
+      isLoading: false,
     }
   },
   computed: {
-    ...mapGetters(['getProducts', 'getSuppliers'])
+    ...mapGetters(['getProducts', 'getSuppliers', 'getCategories', 'getFiltersStocks']),
+    search() {
+      return this.products.filter((product) => {
+        return product.name.toLowerCase().includes(this.searchKey.toLowerCase())
+      })
+    },
+    checkIfProduct() {
+      return this.search.filter((product) => {
+        if ((product.categoryId === this.categorySelected || this.categorySelected === '') && (product.supplierId === this.supplierSelected || this.supplierSelected === '') && (product.onSale === this.onSale || this.onSale === '')) {
+          return product
+        }
+      })
+    }
   },
   methods: {
+    updateFiltersCategory(value) {
+      this.$store.state.filtersStocks.category = value
+    },
+    updateFiltersSupplier(value) {
+      this.$store.state.filtersStocks.supplier = value
+    },
+    updateFiltersOnSale(value) {
+      this.$store.state.filtersStocks.onSale = value
+    },
+    updateFiltersSearch(value) {
+      this.$store.state.filtersStocks.search = value
+    },
+    resetFilters() {
+      this.categorySelected = ""
+      this.supplierSelected = ""
+      this.searchKey = ""
+      this.onSale = ""
+      this.$store.state.filtersStocks.category = ""
+      this.$store.state.filtersStocks.supplier = ""
+      this.$store.state.filtersStocks.onSale = ""
+      this.$store.state.filtersStocks.search = ""
+    },
     getTotalStock(stocks) {
       let totalStock = 0;
       stocks.forEach(stock => {
@@ -91,6 +136,7 @@ export default {
     }
   },
   created: function () {
+    this.isLoading = true;
     this.$store.dispatch('checkToken')
     .then((res) => {
       if(res === 'expired') {
@@ -103,12 +149,24 @@ export default {
         if(res.data.role !== 'warehouse') {
           this.$router.push('/store_home')
         }
+        if(res.data.role === 'warehouse' && res.data.roleNumber !== 'admin') {
+          this.$router.push('/warehouse_home')
+        }
       } else {
         this.$router.push('/')
       }
     })
+    this.categorySelected = this.$store.state.filtersStocks.category
+    this.supplierSelected = this.$store.state.filtersStocks.supplier
+    this.onSale = this.$store.state.filtersStocks.onSale
+    this.searchKey = this.$store.state.filtersStocks.search
     this.$store.dispatch('getProducts')
+    .then((res) => {
+      this.products = res.data
+      this.isLoading = false;
+    })
     this.$store.dispatch('getSuppliers')
+    this.$store.dispatch('getCategories')
   },
 }
 </script>

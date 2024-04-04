@@ -1,8 +1,8 @@
 <template>
     <div class="new-order-edit-quantity">
         <div class="new-order-edit-quantity-inputs">
-            <label>Nouvelle quantité : </label>
-            <input class="new-order-edit-quantity-input" v-model="quantity" type="number">
+            <label for="quatity-input">Nouvelle quantité : </label>
+            <input class="new-order-edit-quantity-input" id="quatity-input" v-model="quantity" min="0" type="number">
         </div>
         <div class="error" v-if="error">{{ error }}</div>
         <div class="new-order-edit-quantity-buttons">

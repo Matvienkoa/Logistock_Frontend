@@ -1,4 +1,10 @@
 <template>
+<div v-if="isLoading" id="spinner" class="lds-ring">
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+</div>
 <StoreAddProduct v-if="this.$store.state.modeAddProduct === 'addProduct'" :product="product" />
 <Header :title="'Commander'"/>
   <div class="back-head">
@@ -12,26 +18,28 @@
   </div>
   <div class="page">
     <div class="search-box">
-      <select v-model="categorySelected" name="category" id="" class="search-input">
+      <div class="search-key-box">
+        <img src="../assets/search.svg" alt="" class="search-key-icon">
+        <input v-model="searchKey" @change="updateFiltersSearch(searchKey)" type="search" class="search-key" placeholder="Recherche...">
+      </div>
+      <select v-model="categorySelected" @change="updateFiltersCategory(categorySelected)" name="category" id="select-category" class="search-input">
         <option value="">Toutes les Catégories</option>
-        <option value="epicerie">Epicerie</option>
-        <option value="frais">Frais</option>
-        <option value="alcool">Alcool</option>
-        <option value="soft">Soft</option>
-        <option value="linge">Linge</option>
-        <option value="emballage">Emballage</option>
-        <option value="entretien">Entretien</option>
-        <option value="materiel">Petits Matériels</option>
-        <option value="autre">Autre</option>
+        <option :value="null">Sans Catégorie attribuée</option>
+        <option v-for="category in getCategories" :key="category.id" :value="category.id">{{category.name}}</option>
       </select>
     </div>
+    <div v-if="searchKey || categorySelected" @click="resetFilters()" class="close-filters">
+      <p>Supprimer les filtres</p>
+      <img crossorigin="anonymous" src="../assets/close-white.svg" alt="" class="close-white">
+    </div>
+    <p class="no-product-txt" v-if="checkIfProduct.length === 0">Aucun produit ne correspond à votre recherche</p>
     <div class="page-products">
-      <div v-for="product in getProducts" :key="product.id">
-        <div v-if="(product.category === categorySelected || categorySelected === '') && product.onSale === 'yes'" class="bloc-card">
+      <div v-for="product in search" :key="product.id">
+        <div v-if="(product.categoryId === categorySelected || categorySelected === '') && product.onSale === 'yes'" class="bloc-card">
           <div class="bloc-card-top">
             <div class="bloc-card-image-box">
               <img crossorigin="anonymous" v-if="product.image" :src="product.image" alt="" class="bloc-card-image">
-              <img crossorigin="anonymous" v-if="!product.image" src="../assets/3.webp" alt="" class="bloc-card-image no-pic">
+              <img crossorigin="anonymous" v-if="!product.image" src="../assets/logo.png" alt="" class="bloc-card-image no-pic">
             </div>
             <div class="bloc-add-product">
               <img v-if="checkProduct(product.id) === -1 && checkAvailability(product.id) > 0" @click="addProduct(product.id)" src="../assets/add-cart.svg" class="add-cart-icon">
@@ -61,6 +69,7 @@ import Header from '@/components/Header.vue'
 import Footer from '@/components/FooterStore.vue'
 import StoreAddProduct from '@/components/StoreAddProduct.vue'
 import { mapGetters } from 'vuex';
+import instance from '@/axios';
 
 export default {
   name: 'store_products',
@@ -73,13 +82,40 @@ export default {
     return {
       mode: "",
       product: null,
-      categorySelected: ""
+      categorySelected: "",
+      products: [],
+      searchKey: "",
+      isLoading: false,
     }
   },
   computed: {
-      ...mapGetters(['getProducts', 'getCartForIcon'])
+      ...mapGetters(['getProfile', 'getProducts', 'getCartForIcon', 'getCategories', 'getFiltersCatalog']),
+      search() {
+        return this.products.filter((product) => {
+          return product.name.toLowerCase().includes(this.searchKey.toLowerCase())
+        })
+      },
+      checkIfProduct() {
+        return this.search.filter((product) => {
+          if ((product.categoryId === this.categorySelected || this.categorySelected === '') && product.onSale === 'yes') {
+            return product
+          }
+        })
+      }
   },
   methods: {
+    updateFiltersCategory(value) {
+      this.$store.state.filtersCatalog.category = value
+    },
+    updateFiltersSearch(value) {
+      this.$store.state.filtersCatalog.search = value
+    },
+    resetFilters() {
+      this.categorySelected = ""
+      this.searchKey = ""
+      this.$store.state.filtersCatalog.category = ""
+      this.$store.state.filtersCatalog.search = ""
+    },
     addProduct(product) {
       this.$store.state.modeAddProduct = "addProduct"
       this.product = product
@@ -106,6 +142,7 @@ export default {
     },
   },
   created() {
+    this.isLoading = true;
     this.$store.dispatch('checkToken')
     .then((res) => {
       if(res === 'expired') {
@@ -118,24 +155,47 @@ export default {
         if(res.data.role !== 'store') {
           this.$router.push('/warehouse_home')
         }
+        instance.get(`/store/number/${res.data.roleNumber}`)
+        .then((res) => {
+          instance.get(`/product/store/${res.data.id}`)
+          .then((res) => {
+            this.products = res.data
+          })
+        })
       } else {
         this.$router.push('/')
       }
     })
+    this.categorySelected = this.$store.state.filtersCatalog.category
+    this.searchKey = this.$store.state.filtersCatalog.search
     this.$store.dispatch('getProducts')
+    .then(() => {
+      this.isLoading = false;
+    })
     this.$store.dispatch('getCartForIcon')
+    this.$store.dispatch('getCategories')
   }
 }
 </script>
 
 <style scoped>
+.page{
+  flex-direction: column;
+}
 .search-box{
-  width: 70%;
-  max-width: 400px;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
   margin-top: 10px;
+}
+.search-key-box{
+  margin: 0;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  margin-left: 10px;
+  height: 30px;
 }
 .search-input{
   width: 200px;
@@ -147,12 +207,23 @@ export default {
   color: white;
   font-size: 1em;
   background-image: linear-gradient(52deg, rgb(174,174,174),rgb(14,0,0));
+  margin-bottom: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 .search-input:focus{
   outline: none;
 }
 .search-input option{
   color: #000;
+}
+.close-filters{
+  height: 30px;
+}
+.no-product-txt{
+  width: 80%;
+  text-align: center;
+  margin-top: 60px;
 }
 .page-products{
   padding-top: 30px;

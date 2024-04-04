@@ -27,7 +27,7 @@ export default {
         background-color: rgb(24, 24, 24);
         position: fixed;
         bottom: 0;
-        z-index: 2;
+        z-index: 4;
     }
     #pizza-back{
         position: absolute;

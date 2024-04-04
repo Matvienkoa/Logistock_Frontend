@@ -4,23 +4,30 @@
     <router-link v-if="getSupplier && getSupplier.id" :to="{name: 'warehouse_supplier', params: {id: getSupplier.id}}" class="back-button">Retour</router-link>
   </div>
   <div class="page-form">
+    <h1 class='title-edit'>{{getSupplier.name}}</h1>
     <div class="form">
-      <label class="label">Nom<span class="star">*</span></label>
+      <p class="label-form">Nom<span class="star">*</span></p>
       <input class="input" id="input-name" @input="cancelError()" v-model="name" type="text" placeholder="Nom du fournisseur" />
-      <label class="label">Adresse</label>
-      <input class="input" v-model="adress" type="text" placeholder="Adresse" />
-      <label class="label">Adresse (suite)</label>
-      <input class="input" v-model="adress2" type="text" placeholder="Adresse Suite" />
-      <label class="label">Code Postal</label>
-      <input class="input" v-model="postalCode" type="text" placeholder="Code Postal" />
-      <label class="label">Ville</label>
-      <input class="input" v-model="city" type="text" placeholder="Ville" />
-      <label class="label">Contact</label>
-      <input class="input" v-model="contact" type="text" placeholder="Nom du contact" />
-      <label class="label">Tél</label>
-      <input class="input" v-model="tel" type="text" placeholder="Téléphone" />
-      <label class="label">Mail</label>
-      <input class="input" v-model="mail" type="text" placeholder="Mail" />
+      <p class="label-form">Numéro de client</p>
+      <input class="input" id="input-number" v-model="number" type="text" placeholder="Numéro de client" />
+      <p class="label-form">SIRET</p>
+      <input class="input" id="input-siret" v-model="siret" type="text" placeholder="Siret" />
+      <p class="label-form">Adresse</p>
+      <input class="input" id="input-adress" v-model="adress" type="text" placeholder="Adresse" />
+      <p class="label-form">Adresse (suite)</p>
+      <input class="input" id="input-adress2" v-model="adress2" type="text" placeholder="Adresse Suite" />
+      <p class="label-form">Code Postal</p>
+      <input class="input" id="input-pc" v-model="postalCode" type="text" placeholder="Code Postal" />
+      <p class="label-form">Ville</p>
+      <input class="input" id="input-city" v-model="city" type="text" placeholder="Ville" />
+      <p class="label-form">Contact</p>
+      <input class="input" id="input-contact" v-model="contact" type="text" placeholder="Nom du contact" />
+      <p class="label-form">Tél</p>
+      <input class="input" id="input-tel" v-model="tel" type="text" placeholder="Téléphone" />
+      <p class="label-form">Mail</p>
+      <input class="input" id="input-mail" v-model="mail" type="text" placeholder="Mail" />
+      <p class="label-form">Commentaire</p>
+      <input class="input" id="input-comment" v-model="comment" type="text" placeholder="Commentaire" maxlength="300" />
       <div class="error" v-if="error">{{ error.message }}</div>
       <button @click="editSupplier()" class="valid-edit-button">Modifier le fournisseur</button>
     </div>
@@ -43,13 +50,16 @@ export default {
         return {
             error: "",
             name: "",
+            number: "",
+            siret: "",
             adress: "",
             adress2: "",
             postalCode: "",
             city: "",
             tel: "",
             mail: "",
-            contact: ""
+            contact: "",
+            comment: ""
         }
     },
     computed: {
@@ -64,6 +74,8 @@ export default {
         editSupplier() {
             this.$store.dispatch("editSupplier", {
                 name: this.name,
+                number : this.number,
+                siret: this.siret,
                 adress: this.adress,
                 adress2: this.adress2,
                 postalCode: this.postalCode,
@@ -71,7 +83,8 @@ export default {
                 tel: this.tel,
                 mail: this.mail,
                 id: this.getSupplier.id,
-                contact: this.contact
+                contact: this.contact,
+                comment: this.comment
             })
             .then((res) => {
                 if(res.status === 201) {
@@ -98,6 +111,9 @@ export default {
           if(res.data.role !== 'warehouse') {
             this.$router.push('/store_home')
           }
+          if(res.data.role === 'warehouse' && res.data.roleNumber !== 'admin') {
+            this.$router.push('/warehouse_home')
+          }
         } else {
           this.$router.push('/')
         }
@@ -105,6 +121,8 @@ export default {
       this.$store.dispatch('getSupplier', this.$route.params.id)
       .then((res) => {
         this.name = res.data.name
+        this.number = res.data.number
+        this.siret = res.data.siret
         this.adress = res.data.adress
         this.adress2 = res.data.adress2
         this.postalCode = res.data.postalCode
@@ -112,6 +130,7 @@ export default {
         this.contact = res.data.contact
         this.tel = res.data.tel
         this.mail = res.data.mail
+        this.comment = res.data.comment
       })
   },
 }
@@ -123,21 +142,20 @@ export default {
   width: 100%;
   max-width: 1200px;
   margin: auto;
-  padding-top: 60px;
+  padding-top: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 10px;
 }
-.form{
-  width: 85%;
-  max-width: 600px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 60px;
+.title-edit{
+  width: 90%;
+  margin: auto;
+  text-align: center;
+  font-size: 1.5em;
+  margin-bottom: 20px;
 }
-.label{
+.label-form{
   margin-bottom: 5px;
   margin-left: 5px;
   font-weight: 600;

@@ -1,4 +1,10 @@
 <template>
+<div v-if="isLoading" id="spinner" class="lds-ring">
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+</div>
 <BillOrder v-if="this.$store.state.modeBillOrder === 'billOrder'" :order="this.getOrder" :numberOfRefs="this.numberOfRefs" />
 <Header :title="'Commande Validée'"/>
     <div class="back-head">
@@ -16,6 +22,7 @@
             <p>Demandeur : <span class="bold">{{getOrder.applicant}}</span></p>
             <p v-if="getOrder.commentStore">Note à la commande : {{getOrder.commentStore}}</p>
             <p v-if="getOrder.commentWarehouse">Réponse : {{getOrder.commentWarehouse}}</p>
+            <p v-if="getProfile.roleNumber === 'admin'">Montant de la comande : {{amount.toFixed(2)}} €</p>
         </div>
         <Product v-for="detail in getOrder.orderDetails" :key="detail.id" :detail="detail.id" :id="detail.productId" :quantity="detail.quantity" :request="detail.requestQuantity" />
     </div>
@@ -29,6 +36,7 @@ import Footer from '@/components/FooterWarehouse.vue'
 import Product from '@/components/WarehousePreparationValidatedOrderProduct.vue'
 import BillOrder from '@/components/WarehousePreparationValidatedOrderBill.vue'
 import { mapGetters } from 'vuex';
+import instance from '@/axios';
 let moment = require('moment');
 moment.locale('fr');
 
@@ -45,7 +53,9 @@ export default {
             error: "",
             moment: moment,
             Refs: [],
-            numberOfRefs: 0
+            numberOfRefs: 0,
+            amount: 0,
+            isLoading: false,
         }
     },
     computed: {
@@ -57,6 +67,7 @@ export default {
         }
     },
     created: function () {
+        this.isLoading = true;
         this.$store.dispatch('checkToken')
         .then((res) => {
             if(res === 'expired') {
@@ -78,7 +89,12 @@ export default {
             res.data.orderDetails.forEach(detail => {
                 this.Refs.push(detail)
                 this.numberOfRefs += 1
+                this.isLoading = false;
             })
+        })
+        instance.get(`/order/amount/${this.$route.params.id}`)
+        .then((res) => {
+            this.amount = res.data/100
         })
         this.$store.dispatch('getProducts')
         this.$store.state.modeBillOrder = ""
